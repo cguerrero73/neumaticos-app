@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Círculo vacío (solo llanta sin neumático) -->
+  <circle cx="50" cy="50" r="26" fill="#505050" stroke="#606060" stroke-width="2"/>
+  
+  <!-- Radio borde -->
+  <circle cx="50" cy="50" r="28" fill="none" stroke="#3a3a3a" stroke-width="1"/>
+  
+  <!-- Centro de la llanta -->
+  <circle cx="50" cy="50" r="8" fill="#2a2a2a"/>
+  <circle cx="50" cy="50" r="6" fill="#1a1a1a"/>
+  
+  <!-- Radios de la llanta (5 radios) -->
+  <g fill="#555555">
+    <rect x="48" y="16" width="4" height="18" rx="2"/>
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(72 50 50)"/>
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(144 50 50)"/>
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(216 50 50)"/>
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(288 50 50)"/>
+  </g>
+  
+  <!-- Tuerca central -->
+  <circle cx="50" cy="50" r="3" fill="#1a1a1a"/>
+  <circle cx="50" cy="50" r="1.5" fill="#333333"/>
+</svg>

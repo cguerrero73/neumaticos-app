@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Neumático (círculo exterior con textura) -->
+  <circle cx="50" cy="50" r="48" fill="#1a1a1a"/>
+  <circle cx="50" cy="50" r="46" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+  
+  <!-- Banda de rodamiento (tread) -->
+  <g fill="none" stroke="#262626" stroke-width="1.5">
+    <circle cx="50" cy="50" r="42"/>
+    <circle cx="50" cy="50" r="38"/>
+    <circle cx="50" cy="50" r="34"/>
+    <circle cx="50" cy="50" r="30"/>
+  </g>
+  
+  <!-- Bloques del dibujo del neumático -->
+  <g fill="#333333">
+    <!-- 8 segmentos de dibujo -->
+    <rect x="47" y="6" width="6" height="8" rx="1"/>
+    <rect x="47" y="86" width="6" height="8" rx="1"/>
+    <rect x="6" y="47" width="8" height="6" rx="1"/>
+    <rect x="86" y="47" width="8" height="6" rx="1"/>
+    <rect x="19" y="19" width="6" height="6" rx="1" transform="rotate(45 22 22)"/>
+    <rect x="75" y="19" width="6" height="6" rx="1" transform="rotate(-45 78 22)"/>
+    <rect x="19" y="75" width="6" height="6" rx="1" transform="rotate(-45 22 78)"/>
+    <rect x="75" y="75" width="6" height="6" rx="1" transform="rotate(45 78 78)"/>
+  </g>
+  
+  <!-- Llanta (rim) -->
+  <circle cx="50" cy="50" r="26" fill="#404040"/>
+  <circle cx="50" cy="50" r="24" fill="#505050"/>
+  
+  <!-- Anillo exterior de la llanta -->
+  <circle cx="50" cy="50" r="26" fill="none" stroke="#606060" stroke-width="2"/>
+  
+  <!-- Centro de la llanta -->
+  <circle cx="50" cy="50" r="8" fill="#2a2a2a"/>
+  <circle cx="50" cy="50" r="6" fill="#1a1a1a"/>
+  
+  <!-- Radios de la llanta (5 radios estilo aleación) -->
+  <g fill="#555555">
+    <!-- Radio 1 -->
+    <rect x="48" y="16" width="4" height="18" rx="2"/>
+    <!-- Radio 2 -->
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(72 50 50)"/>
+    <!-- Radio 3 -->
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(144 50 50)"/>
+    <!-- Radio 4 -->
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(216 50 50)"/>
+    <!-- Radio 5 -->
+    <rect x="48" y="16" width="4" height="18" rx="2" transform="rotate(288 50 50)"/>
+  </g>
+  
+  <!-- Tuerca central -->
+  <circle cx="50" cy="50" r="3" fill="#1a1a1a"/>
+  <circle cx="50" cy="50" r="1.5" fill="#333333"/>
+</svg>
