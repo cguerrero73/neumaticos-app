@@ -1,10 +1,27 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { PlatformService } from '../../core/services/platform.service';
 import { wheelLayoutService } from '../../core/services/wheel-layout.service';
+import { tireInventoryService } from '../../core/services/tire-inventory.service';
 import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/models/vehicle.model';
+import { TireInventoryItem, TireStatus } from '../../core/models/tire-inventory.model';
+
+interface TireFilters {
+  measure?: string;
+  brand?: string;
+  status?: TireStatus;
+}
+
+interface PendingMovement {
+  action: 'REPLACE' | 'SWAP';
+  position: string;
+  from?: string; // para SWAP
+  to?: string; // para SWAP
+  tire: TireInventoryItem;
+  originalTire?: TirePosition; // el que se reemplaza
+}
 
 @Component({
   selector: 'app-home',
@@ -13,7 +30,7 @@ import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/model
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
 })
-export class HomePage {
+export class HomePage implements OnInit {
   // Services
   private readonly platformService: PlatformService;
 
@@ -22,8 +39,21 @@ export class HomePage {
   vehicle = signal<VehicleWithTires | null>(null);
   selectedPosition = signal<TirePosition | null>(null);
 
+  // Inventory
+  inventory = signal<TireInventoryItem[]>([]);
+  replacedTires = signal<TireInventoryItem[]>([]);
+  filters = signal<TireFilters>({});
+  isDraggingOver = signal(false);
+  dragTargetPosition = signal<string | null>(null);
+  dragData = signal<{ source: 'inventory' | 'diagram'; data: any } | null>(null);
+  pendingMovements = signal<PendingMovement[]>([]);
+
   constructor() {
     this.platformService = new PlatformService();
+  }
+
+  ngOnInit() {
+    this.loadInventory();
   }
 
   // Delegar cálculo de ejes al servicio
@@ -40,6 +70,31 @@ export class HomePage {
     return wheelLayoutService.generateTirePositions(axles);
   });
 
+  // Inventory filtrado
+  filteredInventory = computed(() => {
+    const f = this.filters();
+    const items = this.inventory();
+
+    return items.filter((tire) => {
+      if (f.measure && !tire.measure.toLowerCase().includes(f.measure.toLowerCase())) {
+        return false;
+      }
+      if (f.brand && tire.brand !== f.brand) {
+        return false;
+      }
+      if (f.status && tire.status !== f.status) {
+        return false;
+      }
+      return true;
+    });
+  });
+
+  // Cargar inventario
+  async loadInventory() {
+    const items = await tireInventoryService.getInventory();
+    this.inventory.set(items);
+  }
+
   // Detectar si necesita ruedas verticales
   needsVerticalWheels(): boolean {
     return this.platformService.needsVerticalWheels();
@@ -49,8 +104,319 @@ export class HomePage {
     return this.selectedPosition()?.position === position;
   }
 
+  hasTire(position: string): boolean {
+    const pos = this.vehicle()?.positions.find((p) => p.position === position);
+    return pos?.hasTire ?? false;
+  }
+
+  // ===== Drag desde inventario =====
+  onDragStart(event: DragEvent, tire: TireInventoryItem) {
+    // Crear drag image personalizado
+    const dragImg = document.createElement('div');
+    dragImg.className = 'drag-image';
+    dragImg.innerHTML = `
+      <div class="drag-tire-card">
+        <div class="drag-measure">${tire.measure}</div>
+        <div class="drag-brand">${tire.brand}</div>
+      </div>
+    `;
+    dragImg.style.cssText = `
+      position: fixed;
+      top: -1000px;
+      left: -1000px;
+      z-index: 10000;
+      pointer-events: none;
+    `;
+
+    // Agregar estilos
+    const style = document.createElement('style');
+    style.textContent = `
+      .drag-tire-card {
+        background: #1a202c;
+        border: 2px solid #48bb78;
+        border-radius: 8px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .drag-measure {
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .drag-brand {
+        font-size: 11px;
+        color: #718096;
+      }
+    `;
+    dragImg.appendChild(style);
+    document.body.appendChild(dragImg);
+
+    try {
+      event.dataTransfer!.setDragImage(dragImg, 60, 30);
+    } catch (e) {
+      // setDragImage puede fallar en algunos browsers, ignoramos
+    }
+
+    // Limpiar después de un tiempo
+    setTimeout(() => dragImg.remove(), 0);
+
+    event.dataTransfer?.setData(
+      'application/json',
+      JSON.stringify({
+        source: 'inventory',
+        tire,
+      }),
+    );
+    this.dragData.set({ source: 'inventory', data: tire });
+  }
+
+  // ===== Drag desde rueda del diagrama (para swap) =====
+  onWheelDragStart(event: DragEvent, position: string) {
+    const currentPos = this.vehicle()?.positions.find((p) => p.position === position);
+    if (!currentPos || !currentPos.code) {
+      event.preventDefault();
+      return;
+    }
+
+    // Crear drag image personalizado
+    const dragImg = document.createElement('div');
+    dragImg.className = 'drag-image';
+    dragImg.innerHTML = `
+      <div class="drag-tire-card">
+        <div class="drag-measure">${currentPos.code}</div>
+        <div class="drag-brand">${position}</div>
+      </div>
+    `;
+    dragImg.style.cssText = `
+      position: fixed;
+      top: -1000px;
+      left: -1000px;
+      z-index: 10000;
+      pointer-events: none;
+    `;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .drag-tire-card {
+        background: #1a202c;
+        border: 2px solid #e53e3e;
+        border-radius: 8px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .drag-measure {
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .drag-brand {
+        font-size: 11px;
+        color: #718096;
+      }
+    `;
+    dragImg.appendChild(style);
+    document.body.appendChild(dragImg);
+
+    try {
+      event.dataTransfer!.setDragImage(dragImg, 60, 30);
+    } catch (e) {}
+
+    setTimeout(() => dragImg.remove(), 0);
+
+    const dragPayload = {
+      source: 'diagram',
+      position,
+      tireId: currentPos.id,
+      tireCode: currentPos.code,
+    };
+
+    event.dataTransfer?.setData('application/json', JSON.stringify(dragPayload));
+    this.dragData.set({ source: 'diagram', data: dragPayload });
+  }
+
+  onWheelDragEnd(event: DragEvent) {
+    this.dragData.set(null);
+  }
+
+  // ===== Filtros =====
+  applyFilters() {
+    // La señal se actualiza automáticamente por ngModel
+    // Forzamos update para computed
+    this.filters.update((f) => ({ ...f }));
+  }
+
+  // ===== Drag & Drop por rueda =====
+  onWheelDragOver(event: DragEvent, position: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer!.dropEffect = 'move';
+  }
+
+  onWheelDragEnter(event: DragEvent, position: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragTargetPosition.set(position);
+  }
+
+  onWheelDragLeave(event: DragEvent) {
+    this.dragTargetPosition.set(null);
+  }
+
+  onWheelDrop(event: DragEvent, targetPosition: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragTargetPosition.set(null);
+
+    const data = event.dataTransfer?.getData('application/json');
+    if (!data) return;
+
+    try {
+      const dragItem = JSON.parse(data);
+
+      if (dragItem.source === 'inventory') {
+        // Reemplazar: mover existente a replaced, nuevo al diagrama
+        this.replaceTire(targetPosition, dragItem.tire);
+      } else if (dragItem.source === 'diagram') {
+        // Intercambiar entre dos posiciones del diagrama
+        this.swapTires(targetPosition, dragItem.position);
+      }
+    } catch (e) {
+      console.error('Drop parse error:', e);
+    }
+
+    this.dragData.set(null);
+  }
+
+  // ===== Reemplazo - agrega a movimientos pendientes =====
+  replaceTire(targetPosition: string, newTire: TireInventoryItem) {
+    const vehicle = this.vehicle();
+    if (!vehicle) return;
+
+    // Encontrar neumático actual en esta posición
+    const currentPos = vehicle.positions.find((p) => p.position === targetPosition);
+
+    // Agregar a movimientos pendientes
+    this.pendingMovements.update((movements) => [
+      ...movements,
+      {
+        action: 'REPLACE',
+        position: targetPosition,
+        tire: newTire,
+        originalTire: currentPos || undefined,
+      },
+    ]);
+
+    // También mover el actual a replaced si existe
+    if (currentPos && currentPos.code) {
+      const replaced: TireInventoryItem = {
+        id: currentPos.id || `R-${Date.now()}`,
+        measure: currentPos.code,
+        brand: currentPos.code,
+        model: '',
+        status: 'USED',
+      };
+      this.replacedTires.update((tires) => [...tires, replaced]);
+    }
+  }
+
+  // ===== Swap - agrega a movimientos pendientes =====
+  swapTires(pos1: string, pos2: string) {
+    const vehicle = this.vehicle();
+    if (!vehicle) return;
+
+    const pos1Obj = vehicle.positions.find((p) => p.position === pos1);
+    const pos2Obj = vehicle.positions.find((p) => p.position === pos2);
+
+    if (!pos1Obj || !pos2Obj) return;
+
+    // Agregar a movimientos pendientes
+    this.pendingMovements.update((movements) => [
+      ...movements,
+      {
+        action: 'SWAP',
+        position: pos1,
+        from: pos1,
+        to: pos2,
+        tire: {} as TireInventoryItem, // vacío para swap
+        originalTire: pos2Obj,
+      },
+    ]);
+  }
+
+  // ===== Métodos para movimientos pendientes =====
+  removeMovement(index: number) {
+    this.pendingMovements.update((movements) => movements.filter((_, i) => i !== index));
+  }
+
+  clearMovements() {
+    this.pendingMovements.set([]);
+    // Recargar inventario si había usado
+    this.loadInventory();
+  }
+
+  applyMovements() {
+    const movements = this.pendingMovements();
+    const vehicle = this.vehicle();
+
+    if (!vehicle || movements.length === 0) return;
+
+    // Aplicar cada movimiento
+    let updatedPositions = [...vehicle.positions];
+
+    for (const move of movements) {
+      if (move.action === 'REPLACE') {
+        // Encontrar y actualizar posición
+        updatedPositions = updatedPositions.map((pos) => {
+          if (pos.position === move.position) {
+            return {
+              ...pos,
+              id: move.tire.id,
+              code: `${move.tire.measure} ${move.tire.brand}`,
+              hasTire: true,
+              pressure: move.tire.pressure,
+              depth: move.tire.depth,
+            };
+          }
+          return pos;
+        });
+
+        // Quitar del inventario
+        this.inventory.update((items) => items.filter((t) => t.id !== move.tire.id));
+      } else if (move.action === 'SWAP' && move.originalTire) {
+        // Intercambiar
+        const other = updatedPositions.find((p) => p.position === move.to);
+        const current = updatedPositions.find((p) => p.position === move.position);
+
+        if (other && current) {
+          updatedPositions = updatedPositions.map((pos) => {
+            if (pos.position === move.position) {
+              return { ...pos, ...other };
+            }
+            if (pos.position === move.to) {
+              return { ...pos, ...current };
+            }
+            return pos;
+          });
+        }
+      }
+    }
+
+    // Actualizar vehículo
+    this.vehicle.set({
+      ...vehicle,
+      positions: updatedPositions,
+    });
+
+    // Limpiar movimientos
+    const appliedCount = movements.length;
+    this.pendingMovements.set([]);
+
+    alert(`Applied ${appliedCount} movements successfully!`);
+  }
+
   simulateScan() {
-    // Lista de configuraciones posibles
     const configs = [
       'S1',
       'S2',
@@ -69,9 +435,9 @@ export class HomePage {
       'D1-D2-D3',
     ];
 
-    // Seleccionar una al azar
-    const randomConfig = configs[Math.floor(Math.random() * configs.length)];
     const plates = ['ABC-123', 'DEF-456', 'GHI-789', 'JKL-012', 'MNO-345', 'PQR-678'];
+
+    const randomConfig = configs[Math.floor(Math.random() * configs.length)];
     const randomPlate = plates[Math.floor(Math.random() * plates.length)];
 
     this.loadVehicleWithConfig(`${randomPlate}:${randomConfig}`);
@@ -79,7 +445,6 @@ export class HomePage {
 
   loadVehicle() {
     if (this.manualCode.trim()) {
-      // Soporta formato: "S1" o "S1-D2" o "codigo:S1-D2"
       const input = this.manualCode.trim().toUpperCase();
       this.loadVehicleWithConfig(input);
     }
@@ -93,7 +458,6 @@ export class HomePage {
     let code = input;
     let wheelConfig = 'S1';
 
-    // Parsear formato "codigo:config" o solo "config"
     if (input.includes(':')) {
       const parts = input.split(':');
       code = parts[0];
@@ -103,7 +467,6 @@ export class HomePage {
       code = 'AUTO-' + wheelConfig;
     }
 
-    // Usar servicio para obtener description
     const typeDesc = wheelLayoutService.describeConfig(wheelConfig);
     const axles = wheelLayoutService.calculateAxles(wheelConfig);
     const positions = wheelLayoutService.generateTirePositions(axles);
@@ -119,11 +482,15 @@ export class HomePage {
 
     this.vehicle.set(mock);
     this.manualCode = '';
+
+    // Resetear inventario al cargar nuevo vehículo
+    this.loadInventory();
   }
 
   clearVehicle() {
     this.vehicle.set(null);
     this.selectedPosition.set(null);
+    this.replacedTires.set([]);
   }
 
   selectWheel(axleIndex: number, positionIndex: number) {
@@ -150,7 +517,7 @@ export class HomePage {
   }
 
   changeTire() {
-    alert('Cambiar neumáticocreando nuevo código RFID...');
+    alert('Arrastrá un neumático del inventario a la posición deseada');
   }
 
   createWorkOrder() {
