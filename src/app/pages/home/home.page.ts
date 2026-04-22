@@ -47,6 +47,18 @@ export class HomePage {
     return this.platformService.needsVerticalWheels();
   }
 
+  // Calcular índice global de la rueda
+  getGlobalIndex(axleIndex: number, positionIndex: number): number {
+    const axles = this.axleDefinitions();
+    let globalIndex = 0;
+
+    for (let i = 0; i < axleIndex; i++) {
+      globalIndex += axles[i].positions.length;
+    }
+
+    return globalIndex + positionIndex;
+  }
+
   simulateScan() {
     // Lista de configuraciones posibles
     const configs = [
@@ -131,6 +143,7 @@ export class HomePage {
 
   closeContextMenu() {
     this.showContextMenu.set(false);
+    this.selectedPosition.set(null);
   }
 
   viewDetail() {

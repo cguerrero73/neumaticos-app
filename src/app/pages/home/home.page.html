@@ -1,103 +1,119 @@
 <!-- Scanner Page -->
 <div class="scanner-page">
-  <div class="header">
-    <h1>Gestión de Neumáticos</h1>
-    <p>Escaneá el vehículo para comenzar</p>
-  </div>
+  <!-- Panel lateral de información del neumático (side panel) -->
+  <div class="tire-panel" [class.visible]="selectedPosition()">
+    @if (selectedPosition()) {
+      <div class="tire-card">
+        <div class="tire-header">
+          <span class="tire-code">{{ selectedPosition()?.code || '-' }}</span>
+          <button class="close-panel" (click)="closeContextMenu()">✕</button>
+        </div>
+        <div class="tire-position">{{ selectedPosition()?.position }}</div>
 
-  @if (!vehicle()) {
-    <!-- Scanner Section -->
-    <div class="scanner-section">
-      <div class="scanner-icon" (click)="simulateScan()">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="120"
-          height="120"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <line x1="7" y1="8" x2="17" y2="8" />
-          <line x1="7" y1="12" x2="17" y2="12" />
-          <line x1="7" y1="16" x2="13" y2="16" />
-        </svg>
-      </div>
-      <p class="hint">Tocá para simular escaneo</p>
+        <div class="tire-info">
+          <div class="info-row">
+            <span class="label">Presión</span>
+            <span class="value">{{ selectedPosition()?.pressure || '-' }} PSI</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Profundidad</span>
+            <span class="value">{{ selectedPosition()?.depth || '-' }} mm</span>
+          </div>
+        </div>
 
-      <div class="manual-input">
-        <input
-          type="text"
-          placeholder="O ingresá el código manualmente"
-          [(ngModel)]="manualCode"
-          (keyup.enter)="loadVehicle()"
-        />
-        <button (click)="loadVehicle()">Buscar</button>
-      </div>
-    </div>
-  } @else {
-    <!-- Vehicle Template -->
-    <div class="vehicle-template">
-      <div class="vehicle-header">
-        <button class="back-btn" (click)="clearVehicle()">← Volver</button>
-        <div class="vehicle-info">
-          <h2>{{ vehicle()!.plate }}</h2>
-          <p class="config-badge">{{ vehicle()!.wheelConfig }}</p>
-          <p>{{ vehicle()!.type }}</p>
+        <div class="tire-actions">
+          <button class="action-btn" (click)="viewDetail()"><span>📋</span> Detalle</button>
+          <button class="action-btn" (click)="changeTire()"><span>🔄</span> Cambiar</button>
+          <button class="action-btn" (click)="createWorkOrder()"><span>📝</span> OT</button>
+          <button class="action-btn" (click)="registerDepth()"><span>📏</span> Profundidad</button>
         </div>
       </div>
+    }
+  </div>
 
-      <div class="template-diagram">
-        <svg viewBox="0 0 300 600" class="vehicle-svg">
-          <!-- Ejes generados dinámicamente -->
-          @for (axle of axleDefinitions(); track axle.axleIndex) {
-            <!-- Ruedas de este eje -->
-            @for (pos of axle.positions; track pos.position) {
-              <g
-                class="wheel"
-                [class.vertical]="needsVerticalWheels()"
-                (click)="openContextMenu($event, $index)"
-              >
-                <image
-                  href="/wheel.svg"
-                  [attr.x]="pos.x - 30"
-                  [attr.y]="pos.y - 15"
-                  width="60"
-                  height="30"
-                />
-              </g>
+  <!-- Main Content: Scanner or Vehicle -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Gestión de Neumáticos</h1>
+      <p>Escaneá el vehículo para comenzar</p>
+    </div>
+
+    @if (!vehicle()) {
+      <!-- Scanner Section -->
+      <div class="scanner-section">
+        <div class="scanner-icon" (click)="simulateScan()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="120"
+            height="120"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="7" y1="8" x2="17" y2="8" />
+            <line x1="7" y1="12" x2="17" y2="12" />
+            <line x1="7" y1="16" x2="13" y2="16" />
+          </svg>
+        </div>
+        <p class="hint">Tocá para simular escaneo</p>
+
+        <div class="manual-input">
+          <input
+            type="text"
+            placeholder="O ingresá el código manualmente"
+            [(ngModel)]="manualCode"
+            (keyup.enter)="loadVehicle()"
+          />
+          <button (click)="loadVehicle()">Buscar</button>
+        </div>
+      </div>
+    } @else {
+      <!-- Vehicle Template -->
+      <div class="vehicle-template">
+        <div class="vehicle-header">
+          <button class="back-btn" (click)="clearVehicle()">← Volver</button>
+          <div class="vehicle-info">
+            <h2>{{ vehicle()!.plate }}</h2>
+            <p class="config-badge">{{ vehicle()!.wheelConfig }}</p>
+            <p>{{ vehicle()!.type }}</p>
+          </div>
+        </div>
+
+        <div class="template-diagram">
+          <svg viewBox="0 0 300 600" class="vehicle-svg">
+            <!-- Ejes generados dinámicamente -->
+            @for (axle of axleDefinitions(); track axle.axleIndex) {
+              <!-- Ruedas de este eje -->
+              @for (pos of axle.positions; track pos.position) {
+                <g
+                  class="wheel"
+                  [class.vertical]="needsVerticalWheels()"
+                  (click)="openContextMenu($event, getGlobalIndex(axle.axleIndex, $index))"
+                >
+                  <image
+                    href="/wheel.svg"
+                    [attr.x]="pos.x - 18"
+                    [attr.y]="pos.y - 9"
+                    width="18"
+                    height="36"
+                  />
+                  <rect
+                    [attr.x]="pos.x - 18"
+                    [attr.y]="pos.y - 9"
+                    width="18"
+                    height="36"
+                    fill="transparent"
+                  />
+                </g>
+              }
             }
-          }
-        </svg>
+          </svg>
+        </div>
+
+        <p class="hint">Tocá una rueda para ver opciones</p>
       </div>
-
-      <p class="hint">Tocá una rueda para ver opciones</p>
-    </div>
-  }
-
-  <!-- Context Menu Modal -->
-  @if (showContextMenu()) {
-    <div class="modal-overlay" (click)="closeContextMenu()">
-      <div class="context-menu" (click)="$event.stopPropagation()">
-        <h3>{{ selectedPosition()?.position }}</h3>
-        <p class="tire-code">{{ selectedPosition()?.code || 'Sin neumático' }}</p>
-
-        <button class="menu-action" (click)="viewDetail()">
-          <span class="icon">📋</span> Ver detalle
-        </button>
-        <button class="menu-action" (click)="changeTire()">
-          <span class="icon">🔄</span> Cambiar neumático
-        </button>
-        <button class="menu-action" (click)="createWorkOrder()">
-          <span class="icon">📝</span> Crear OT
-        </button>
-        <button class="menu-action" (click)="registerDepth()">
-          <span class="icon">📏</span> Registrar profundidad
-        </button>
-
-        <button class="close-btn" (click)="closeContextMenu()">Cerrar</button>
-      </div>
-    </div>
-  }
+    }
+  </div>
 </div>

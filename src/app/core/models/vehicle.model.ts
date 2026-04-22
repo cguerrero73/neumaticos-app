@@ -57,8 +57,8 @@ export interface LayoutOptions {
 export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
   leftEdge: 80,
   rightEdge: 220,
-  wheelSpacing: 18,
-  sameGroupSpacing: 35,
+  wheelSpacing: 25,
+  sameGroupSpacing: 40,
   diffGroupSpacing: 80,
   startY: 30,
 };
