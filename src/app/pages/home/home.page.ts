@@ -20,9 +20,7 @@ export class HomePage {
   // State
   manualCode = '';
   vehicle = signal<VehicleWithTires | null>(null);
-  showContextMenu = signal(false);
   selectedPosition = signal<TirePosition | null>(null);
-  selectedIndex = signal(0);
 
   constructor() {
     this.platformService = new PlatformService();
@@ -47,16 +45,8 @@ export class HomePage {
     return this.platformService.needsVerticalWheels();
   }
 
-  // Calcular índice global de la rueda
-  getGlobalIndex(axleIndex: number, positionIndex: number): number {
-    const axles = this.axleDefinitions();
-    let globalIndex = 0;
-
-    for (let i = 0; i < axleIndex; i++) {
-      globalIndex += axles[i].positions.length;
-    }
-
-    return globalIndex + positionIndex;
+  isSelected(position: string): boolean {
+    return this.selectedPosition()?.position === position;
   }
 
   simulateScan() {
@@ -133,16 +123,22 @@ export class HomePage {
 
   clearVehicle() {
     this.vehicle.set(null);
+    this.selectedPosition.set(null);
   }
 
-  openContextMenu(event: MouseEvent, index: number) {
-    this.selectedPosition.set(this.vehicle()!.positions[index]);
-    this.selectedIndex.set(index);
-    this.showContextMenu.set(true);
+  selectWheel(axleIndex: number, positionIndex: number) {
+    const axles = this.axleDefinitions();
+    let globalIndex = 0;
+
+    for (let i = 0; i < axleIndex; i++) {
+      globalIndex += axles[i].positions.length;
+    }
+
+    const pos = this.vehicle()!.positions[globalIndex + positionIndex];
+    this.selectedPosition.set(pos ?? null);
   }
 
-  closeContextMenu() {
-    this.showContextMenu.set(false);
+  clearSelection() {
     this.selectedPosition.set(null);
   }
 
@@ -151,12 +147,10 @@ export class HomePage {
     alert(
       `Detalles del neumático:\nCódigo: ${pos?.code || 'N/A'}\nPresión: ${pos?.pressure || 'N/A'} PSI\nProfundidad: ${pos?.depth || 'N/A'} mm\nPosición: ${pos?.position}`,
     );
-    this.closeContextMenu();
   }
 
   changeTire() {
     alert('Cambiar neumáticocreando nuevo código RFID...');
-    this.closeContextMenu();
   }
 
   createWorkOrder() {
@@ -164,11 +158,9 @@ export class HomePage {
       'Crear Orden de Trabajo\nTipo: Cambio de neumático\nPosición: ' +
         this.selectedPosition()?.position,
     );
-    this.closeContextMenu();
   }
 
   registerDepth() {
     alert('Registrar profundidad de dibujo');
-    this.closeContextMenu();
   }
 }
