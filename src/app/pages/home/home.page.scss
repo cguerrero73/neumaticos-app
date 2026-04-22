@@ -375,8 +375,8 @@
   border-radius: 16px;
   padding: 12px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
   overflow: hidden;
   transition: all 0.2s ease;
 
@@ -541,9 +541,12 @@
   }
 }
 
-// ===== Panel de movimientos (dentro del diagrama) =====
+// ===== Panel de movimientos (dentro del diagrama, full height) =====
 .movements-section {
-  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   background: #0f1419;
   border-radius: 12px;
   overflow: hidden;
@@ -554,6 +557,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 
     h3 {
       margin: 0;
@@ -572,9 +576,10 @@
   }
 
   .movements-list {
-    max-height: 150px;
+    flex: 1;
     overflow-y: auto;
     padding: 8px;
+    min-height: 0;
   }
 
   .empty-movements {
