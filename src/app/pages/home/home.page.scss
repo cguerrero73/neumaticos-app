@@ -375,8 +375,22 @@
   border-radius: 16px;
   padding: 12px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+}
+
+// Diagram + Movements side by side
+.diagram-area {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  min-height: 0;
+}
+
+.template-diagram {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   transition: all 0.2s ease;
 
