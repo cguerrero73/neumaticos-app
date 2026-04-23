@@ -15,12 +15,12 @@ interface TireFilters {
 }
 
 interface PendingMovement {
-  action: 'REPLACE' | 'SWAP';
+  action: 'REPLACE' | 'SWAP' | 'EXTRACT';
   position: string;
-  from?: string; // para SWAP
-  to?: string; // para SWAP
+  from?: string;
+  to?: string;
   tire: TireInventoryItem;
-  originalTire?: TirePosition; // el que se reemplaza
+  originalTire?: TirePosition;
 }
 
 @Component({
@@ -274,10 +274,17 @@ export class HomePage implements OnInit {
 
     try {
       const dragItem = JSON.parse(data);
+      const vehicle = this.vehicle();
+      const currentPos = vehicle?.positions.find((p) => p.position === targetPosition);
 
       if (dragItem.source === 'inventory') {
-        // Reemplazar: mover existente a replaced, nuevo al diagrama
-        this.replaceTire(targetPosition, dragItem.tire);
+        if (currentPos && currentPos.hasTire) {
+          // Posición ocupada → REPLACE
+          this.replaceTire(targetPosition, dragItem.tire);
+        } else {
+          // Posición vacía → INSTALAR
+          this.installTire(targetPosition, dragItem.tire);
+        }
       } else if (dragItem.source === 'diagram') {
         // Intercambiar entre dos posiciones del diagrama
         this.swapTires(targetPosition, dragItem.position);
@@ -289,26 +296,45 @@ export class HomePage implements OnInit {
     this.dragData.set(null);
   }
 
-  // ===== Reemplazo - agrega a movimientos pendientes =====
+  // ===== Reemplazo - aplica inmediatamente =====
   replaceTire(targetPosition: string, newTire: TireInventoryItem) {
     const vehicle = this.vehicle();
     if (!vehicle) return;
 
-    // Encontrar neumático actual en esta posición
     const currentPos = vehicle.positions.find((p) => p.position === targetPosition);
 
-    // Agregar a movimientos pendientes
+    // Agregar a historial (nuevo arriba)
     this.pendingMovements.update((movements) => [
-      ...movements,
       {
         action: 'REPLACE',
         position: targetPosition,
         tire: newTire,
         originalTire: currentPos || undefined,
       },
+      ...movements,
     ]);
 
-    // También mover el actual a replaced si existe
+    // Aplicar inmediatamente al vehículo
+    const updatedPositions = vehicle.positions.map((pos) => {
+      if (pos.position === targetPosition) {
+        return {
+          ...pos,
+          id: newTire.id,
+          code: `${newTire.measure} ${newTire.brand}`,
+          hasTire: true,
+          pressure: newTire.pressure,
+          depth: newTire.depth,
+        };
+      }
+      return pos;
+    });
+
+    this.vehicle.set({ ...vehicle, positions: updatedPositions });
+
+    // Quitar del inventario
+    this.inventory.update((items) => items.filter((t) => t.id !== newTire.id));
+
+    // Si hay neumático actual, mover a reemplazados
     if (currentPos && currentPos.code) {
       const replaced: TireInventoryItem = {
         id: currentPos.id || `R-${Date.now()}`,
@@ -321,7 +347,42 @@ export class HomePage implements OnInit {
     }
   }
 
-  // ===== Swap - agrega a movimientos pendientes =====
+  // ===== Instalar en posición vacía =====
+  installTire(targetPosition: string, newTire: TireInventoryItem) {
+    const vehicle = this.vehicle();
+    if (!vehicle) return;
+
+    // Agregar a historial
+    this.pendingMovements.update((movements) => [
+      {
+        action: 'EXTRACT',
+        position: targetPosition,
+        tire: newTire,
+        originalTire: undefined,
+      },
+      ...movements,
+    ]);
+
+    // Aplicar inmediatamente
+    const updatedPositions = vehicle.positions.map((pos) => {
+      if (pos.position === targetPosition) {
+        return {
+          ...pos,
+          id: newTire.id,
+          code: `${newTire.measure} ${newTire.brand}`,
+          hasTire: true,
+          pressure: newTire.pressure,
+          depth: newTire.depth,
+        };
+      }
+      return pos;
+    });
+
+    this.vehicle.set({ ...vehicle, positions: updatedPositions });
+    this.inventory.update((items) => items.filter((t) => t.id !== newTire.id));
+  }
+
+  // ===== Swap - aplica inmediatamente =====
   swapTires(pos1: string, pos2: string) {
     const vehicle = this.vehicle();
     if (!vehicle) return;
@@ -331,18 +392,31 @@ export class HomePage implements OnInit {
 
     if (!pos1Obj || !pos2Obj) return;
 
-    // Agregar a movimientos pendientes
+    // Agregar a historial
     this.pendingMovements.update((movements) => [
-      ...movements,
       {
         action: 'SWAP',
         position: pos1,
         from: pos1,
         to: pos2,
-        tire: {} as TireInventoryItem, // vacío para swap
+        tire: {} as TireInventoryItem,
         originalTire: pos2Obj,
       },
+      ...movements,
     ]);
+
+    // Aplicar inmediatamente
+    const updatedPositions = vehicle.positions.map((pos) => {
+      if (pos.position === pos1) {
+        return { ...pos, ...pos2Obj };
+      }
+      if (pos.position === pos2) {
+        return { ...pos, ...pos1Obj };
+      }
+      return pos;
+    });
+
+    this.vehicle.set({ ...vehicle, positions: updatedPositions });
   }
 
   // ===== Métodos para movimientos pendientes =====

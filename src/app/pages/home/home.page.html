@@ -156,32 +156,42 @@
             </svg>
           </div>
 
-          <!-- Panel de movimientos (a la derecha del diagrama) -->
+          <!-- Panel de historial (a la derecha del diagrama) -->
           <div class="movements-section" [class.has-movements]="pendingMovements().length > 0">
             <div class="panel-header">
-              <h3>Movimientos</h3>
+              <h3>Historial</h3>
               <span class="count">{{ pendingMovements().length }}</span>
             </div>
 
             <div class="movements-list">
               @for (move of pendingMovements(); track $index; let i = $index) {
                 <div class="movement-item">
+                  <div class="movement-type">
+                    @switch (move.action) {
+                      @case ('REPLACE') {
+                        Reemplazo
+                      }
+                      @case ('SWAP') {
+                        Swap
+                      }
+                      @case ('EXTRACT') {
+                        Instalo
+                      }
+                    }
+                  </div>
                   <div class="movement-info">
-                    <span class="action">{{ move.action === 'REPLACE' ? '↻' : '⇄' }}</span>
-                    <span class="position">{{ move.position }}</span>
-                    @if (move.action === 'SWAP') {
+                    @if (move.action === 'REPLACE') {
+                      <span class="position">{{ move.originalTire?.code || '-' }}</span>
+                      <span class="arrow">→</span>
+                      <span class="position">{{ move.tire.measure }}</span>
+                    } @else if (move.action === 'SWAP') {
+                      <span class="position">{{ move.position }}</span>
                       <span class="arrow">↔</span>
                       <span class="position">{{ move.to }}</span>
-                    }
-                  </div>
-                  <div class="movement-details">
-                    @if (move.action === 'REPLACE') {
-                      {{ move.tire.measure }} {{ move.tire.brand }}
                     } @else {
-                      {{ move.originalTire?.code || 'neumatico' }}
+                      <span class="position">{{ move.tire.measure }} {{ move.tire.brand }}</span>
                     }
                   </div>
-                  <button class="remove-movement" (click)="removeMovement(i)">✕</button>
                 </div>
               } @empty {
                 <div class="empty-movements">
@@ -192,8 +202,7 @@
 
             @if (pendingMovements().length > 0) {
               <div class="panel-actions">
-                <button class="cancel-btn" (click)="clearMovements()">Cancelar</button>
-                <button class="apply-btn" (click)="applyMovements()">Aplicar</button>
+                <button class="cancel-btn" (click)="clearMovements()">Limpiar historial</button>
               </div>
             }
           </div>

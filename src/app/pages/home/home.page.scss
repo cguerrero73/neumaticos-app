@@ -609,24 +609,27 @@
 
   .movement-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    gap: 4px;
     background: #1a202c;
     border: 1px solid #2d3748;
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     margin-bottom: 6px;
+
+    .movement-type {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #48bb78;
+      letter-spacing: 0.5px;
+    }
 
     .movement-info {
       display: flex;
       align-items: center;
       gap: 6px;
       flex: 1;
-
-      .action {
-        font-size: 14px;
-        color: #e53e3e;
-      }
 
       .position {
         font-size: 12px;
@@ -636,24 +639,6 @@
 
       .arrow {
         color: #718096;
-      }
-    }
-
-    .movement-details {
-      font-size: 11px;
-      color: #718096;
-    }
-
-    .remove-movement {
-      background: none;
-      border: none;
-      color: #718096;
-      font-size: 12px;
-      cursor: pointer;
-      padding: 4px;
-
-      &:hover {
-        color: #e53e3e;
       }
     }
   }
