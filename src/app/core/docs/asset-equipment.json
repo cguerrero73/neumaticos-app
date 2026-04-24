@@ -1,0 +1,5223 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AssetEquipment Webservice",
+    "version": "1",
+    "description": " - **Sample {id} parameter value**: ASSETCODE1#ORG1 \n - **POST/PUT webservice request construction tip**: Copy content of **AssetEquipment** element from **GET** webservice response and use it as a **template**"
+  },
+  "externalDocs": {
+    "description": "Swagger Entity Reference Document",
+    "url": "https://hexagonppm.fluidtopics.net/access/sources/AITM/topic?ft=1469131&Version_EAM=12.3&ft=en-US"
+  },
+  "servers": [
+    {
+      "url": "{eamhost}/axis/restservices",
+      "description": "EAM Rest Service",
+      "variables": {
+        "eamhost": {
+          "default": "https://us1.eam.hxgnsmartcloud.com:443",
+          "description": "The EAM host on which the EAM instance is deployed"
+        }
+      }
+    }
+  ],
+  "paths": {
+      "/assetdefaults": {
+         "post": {
+            "summary": "Get Asset Default",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            }
+            ],
+            "requestBody": {
+               "$ref": "#/components/requestBodies/AssetEquipmentDefault"
+            },
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/GetDefaultResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/GetDefaultResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }
+      },
+      "/assets": {
+         "post": {
+            "summary": "Add Asset",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            }
+            ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetEquipment"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/example1"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/example2"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/example4"
+                }
+              }
+            }
+          }
+        },
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/AddResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/AddResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }, 
+         "put": {
+            "summary": "Sync Asset",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            }
+            ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetEquipment"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/example1"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/example2"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/example4"
+                }
+              }
+            }
+          }
+        },
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/SyncResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/SyncResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         },
+         "get": {
+            "summary": "Get Asset Collection",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            },
+            {
+              "name": "clonedscreen",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "clone screen function"
+              }
+            },
+            {
+              "name": "cursorposition",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "integer",
+                 "description": "cursor position"
+              }
+            }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/GetCollectionResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/GetCollectionResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }
+      },
+      "/assets/{id}": {
+         "get": {
+            "summary": "Get Asset",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                 "type": "string",
+                 "description": "id of the object"
+               }
+             }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/GetResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/GetResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }, 
+         "delete": {
+            "summary": "Delete Asset",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                 "type": "string",
+                 "description": "id of the object"
+               }
+             }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/DeleteResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/DeleteResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }, 
+         "patch": {
+            "summary": "Update selective fields of Asset",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                 "type": "string",
+                 "description": "id of the object"
+               }
+             }
+            ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetEquipment"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/example1"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/example2"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/example3"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/example4"
+                }
+              }
+            }
+          }
+        },
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/SyncResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/SyncResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }
+      },
+      "/transferequipment": {
+         "post": {
+            "summary": "TransferEquipment",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            }
+            ],
+            "requestBody": {
+               "$ref": "#/components/requestBodies/TransferEquipment"
+            },
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/TransferEquipmentResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/TransferEquipmentResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }
+     },
+      "/changeequipmentnumber": {
+         "post": {
+            "summary": "ChangeEquipmentNumber",
+            "parameters": [
+            {
+              "name": "tenant",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM tenant"
+              }
+            },
+            {
+              "name": "role",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM user role"
+              }
+            },
+            {
+              "name": "organization",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "EAM Organization"
+              }
+            },
+            {
+              "name": "apiversion",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "API version"
+              }
+            },
+            {
+              "name": "sessionid",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "sessionid"
+              }
+            },
+            {
+              "name": "keepsession",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "keep session alive"
+              }
+            },
+            {
+              "name": "authenticationmode",
+              "in": "header",
+              "required": false,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                 "type": "string",
+                 "description": "Authentication Mode"
+              }
+            }
+            ],
+            "requestBody": {
+               "$ref": "#/components/requestBodies/ChangeEquipmentNumber"
+            },
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/ChangeEquipmentNumberResponse"
+                         }
+                       }
+                  }
+               },
+               "400": {
+                  "description": "Bad Request. Request is not valid",
+                  "content": {
+                     "application/json": {
+                         "schema": {
+                            "$ref": "#/components/schemas/ChangeEquipmentNumberResponse"
+                         }
+                       }
+                  }
+               },
+               "500": {
+                  "description": "Internal Server Error"
+                }
+            }
+         }
+      }
+  },
+  "components": {
+    "schemas": {
+      "AssetEquipment": {
+        "required": ["ASSETID","TYPE","DEPARTMENTID"], 
+        "type": "object",
+         "properties": {
+            "ASSETID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "TYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "CLASSID": {
+               "$ref": "#/components/schemas/CLASSID_Type"
+            },
+            "STATUS": {
+               "$ref": "#/components/schemas/STATUS_Type"
+            },
+            "DEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "OPERATIONALSTATUS": {
+               "$ref": "#/components/schemas/STATUS_Type"
+            },
+            "LOANEDTODEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "PMWODEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "CATEGORYID": {
+               "$ref": "#/components/schemas/CATEGORYID"
+            },
+            "PROFILEID": {
+               "$ref": "#/components/schemas/OBJECT_Type"
+            },
+            "INPRODUCTION": {
+               "type":"string"
+            },
+            "SAFETY": {
+               "type":"string"
+            },
+            "OUTOFSERVICE": {
+               "type":"string"
+            },
+            "COSTCODEID": {
+               "$ref": "#/components/schemas/COSTCODEID_Type"
+            },
+            "COMMISSIONDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "TRANSFERDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "WITHDRAWALDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "ASSETVALUE": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "ASSIGNEDTO": {
+               "$ref": "#/components/schemas/PERSONID_Type"
+            },
+            "METERUNIT": {
+               "type":"string"
+            },
+            "CRITICALITYID": {
+               "$ref": "#/components/schemas/CRITICALITYID_Type"
+            },
+            "SOLDDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "DORMANT": {
+               "$ref": "#/components/schemas/DORMANT"
+            },
+            "INVENTORYVERIFICATIONDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "PartAssociation": {
+               "$ref": "#/components/schemas/PartAssociation"
+            },
+            "ManufacturerInfo": {
+               "$ref": "#/components/schemas/ManufacturerInfo"
+            },
+            "FleetVehicleInfo": {
+               "$ref": "#/components/schemas/FleetVehicleInfo"
+            },
+            "CNID": {
+               "$ref": "#/components/schemas/CNID"
+            },
+            "EQUIPMENTSTATEID": {
+               "$ref": "#/components/schemas/EQUIPMENTSTATEID"
+            },
+            "VMRSCODE": {
+               "$ref": "#/components/schemas/VMRSCODE_Type"
+            },
+            "PARTLOCATIONCODE": {
+               "type":"string"
+            },
+            "PurchaseOrderInfo": {
+               "$ref": "#/components/schemas/PurchaseOrderInfo"
+            },
+            "Variables": {
+               "$ref": "#/components/schemas/Variables"
+            },
+            "PREVENTWOCOMPLETION": {
+               "type":"string"
+            },
+            "USERDEFINEDAREA": {
+               "$ref": "#/components/schemas/USERDEFINEDAREA"
+            },
+            "GISOBJID": {
+               "type":"number"
+            },
+            "GISPROFILE": {
+               "type":"string"
+            },
+            "CGMP": {
+               "type":"string"
+            },
+            "LINKGISWO": {
+               "type":"string"
+            },
+            "GISMAPID": {
+               "$ref": "#/components/schemas/GISMAPID_Type"
+            },
+            "GISLAYER": {
+               "type":"string"
+            },
+            "XLOCATION": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "YLOCATION": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "LINEARREFERENCEDETAILS": {
+               "$ref": "#/components/schemas/LINEARREFERENCEDETAILS_Type"
+            },
+            "CallCenterDetails": {
+               "$ref": "#/components/schemas/CallCenterDetails"
+            },
+            "AssetParentHierarchy": {
+               "$ref": "#/components/schemas/AssetParentHierarchy"
+            },
+            "UserDefinedFields": {
+               "$ref": "#/components/schemas/UserDefinedFields"
+            },
+            "FacilityConditionIndex": {
+               "$ref": "#/components/schemas/FacilityConditionIndex"
+            },
+            "RESOURCEENABLED": {
+               "type":"string"
+            },
+            "RELIABILITYRANKINGDETAILS": {
+               "$ref": "#/components/schemas/RELIABILITYRANKINGDETAILS_Type"
+            },
+            "EQUIPMENTALIAS": {
+               "type":"string"
+            },
+            "EnergyPerformance": {
+               "$ref": "#/components/schemas/EnergyPerformance"
+            },
+            "SAFETYDATEREVIEWREQUIRED": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "SAFETYREVIEWEDBY": {
+               "$ref": "#/components/schemas/USERID_Type"
+            },
+            "PERMITDATEREVIEWREQUIRED": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "PERMITREVIEWEDBY": {
+               "$ref": "#/components/schemas/USERID_Type"
+            },
+            "LOTODATEREVIEWREQUIRED": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "LOTOREVIEWEDBY": {
+               "$ref": "#/components/schemas/USERID_Type"
+            },
+            "EQUIPMENTCONFIGURATIONID": {
+               "$ref": "#/components/schemas/EQUIPMENTCONFIGURATIONID_Type"
+            },
+            "RCMLEVELID": {
+               "$ref": "#/components/schemas/USERDEFINEDCODEID_Type"
+            },
+            "RISKMATRIXSETUPID": {
+               "$ref": "#/components/schemas/RISKMATRIXSETUPID_Type"
+            },
+            "RISKPRIORITYNUMBER": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "ORIGINALRECEIPTDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "LATESTRECEIPTDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "ORIGINALINSTALLDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "LATESTINSTALLDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "DOCUMOTOBOOKID": {
+               "type":"string"
+            },
+            "RESERVATIONCALENDAROWNER": {
+               "$ref": "#/components/schemas/USERID_Type"
+            },
+            "RESERVATIONCALENDAROWNERSLIST": {
+               "$ref": "#/components/schemas/APPROVALLISTID_Type"
+            },
+            "WORKSPACEID": {
+               "$ref": "#/components/schemas/WORKSPACEID_Type"
+            },
+            "SETID": {
+               "$ref": "#/components/schemas/CONSISTID_Type"
+            },
+            "SETPOSITION": {
+               "type":"string"
+            },
+            "CONSISTID": {
+               "$ref": "#/components/schemas/CONSISTID_Type"
+            },
+            "CONSISTPOSITION": {
+               "type":"string"
+            },
+            "URL": {
+               "type":"string"
+            },
+            "CONDITIONINDEX": {
+               "$ref": "#/components/schemas/USERDEFINEDCODEID_Type"
+            },
+            "CONDITIONSCORE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PROCESSERROR": {
+               "type":"string"
+            },
+            "LINEARUOMID": {
+               "$ref": "#/components/schemas/LINEARUOMID_Type"
+            },
+            "EQUIPMENTLENGTHOVERRIDE": {
+               "type":"string"
+            },
+            "TEMPMONITORED": {
+               "type":"string"
+            },
+            "DRIVER": {
+               "$ref": "#/components/schemas/Employee_Type"
+            },
+            "PHONENUMBER": {
+               "type":"string"
+            },
+            "ACCESSIBLE": {
+               "type":"string"
+            },
+            "NONSMOKING": {
+               "type":"string"
+            },
+            "HARDWAREVER": {
+               "type":"string"
+            },
+            "SOFTWAREVER": {
+               "type":"string"
+            },
+            "PURCHASINGASSET": {
+               "type":"string"
+            },
+            "BIOMEDICALASSET": {
+               "type":"string"
+            },
+            "UMDNS": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "OEMSITE": {
+               "type":"string"
+            },
+            "VENDOR": {
+               "type":"string"
+            },
+            "COVERAGETYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "LOCKOUT": {
+               "type":"string"
+            },
+            "PERSONALPROTECTIVEEQUIP": {
+               "type":"string"
+            },
+            "CONFINEDSPACE": {
+               "type":"string"
+            },
+            "STATEMENTOFCOND": {
+               "type":"string"
+            },
+            "BUILDMAINTPROGRAM": {
+               "type":"string"
+            },
+            "HIPAACONFIDENTIALITY": {
+               "type":"string"
+            },
+            "OWNERSHIPTYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "PURCHASEORDERCODE": {
+               "type":"string"
+            },
+            "PURCHASEDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "PURCHASECOST": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "PURCHASECURRENCY": {
+               "$ref": "#/components/schemas/CURRENCYID_Type"
+            },
+            "DISPOSALTYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "CHECKLISTFILTER": {
+               "type":"string"
+            },
+            "TOLERANCESIZE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "FUELID": {
+               "$ref": "#/components/schemas/FUELID_Type"
+            },
+            "RISKPRIORITYCODE": {
+               "type":"string"
+            },
+            "CRITICALITYSCORE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "CORRECTIONCONDITIONSCORE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "CORRECTIONCONDITIONREASON": {
+               "type":"string"
+            },
+            "CORRECTIONCONDITIONDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "CORRECTIONUSAGE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "CORRECTIONUSAGEUOM": {
+               "$ref": "#/components/schemas/UOMID_Type"
+            },
+            "ENDUSEFULLIFE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "REMAININGUSEFULLIFE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "SERVICELIFEUSAGE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "SERVICELIFEUSAGEUOM": {
+               "$ref": "#/components/schemas/UOMID_Type"
+            },
+            "PROFILEPICTURE": {
+               "$ref": "#/components/schemas/DOCUMENTID_Type"
+            },
+            "PERFORMANCEDETAILS": {
+               "$ref": "#/components/schemas/PERFORMANCEDETAILS"
+            },
+            "RISKCONSEQUENCECOST": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "FAILUREPROBPERCENTAGE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "BLACKSWAN": {
+               "type":"string"
+            },
+            "BLACKSWANCOST": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "CURRENCYCODE": {
+               "type":"string"
+            },
+            "PIDNUMBER": {
+               "type":"string"
+            },
+            "PIDDRAWING": {
+               "type":"string"
+            },
+            "UNMITIGATEDRISKLEVELID": {
+               "$ref": "#/components/schemas/RISKMATRIXSETUPID_Type"
+            },
+            "UNMITIGATEDRISKPRIORITYNUMBER": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "TAGINFOMAPSERVERURL": {
+               "type":"string"
+            },
+            "WorkflowSummaryInfo": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/WorkflowSummaryInfo"
+                } 
+            },
+            "EQUIPMENTREVISIONID": {
+               "$ref": "#/components/schemas/STANDARDENTITYID_Type"
+            },
+            "BATCHEQUIPMENTREVISIONID": {
+               "$ref": "#/components/schemas/STANDARDENTITYID_Type"
+            },
+            "EQUIPMENTREVISIONCONTROL": {
+               "type":"string"
+            },
+            "recordid": {
+               "type":"number"
+            },
+            "user_entity": {
+               "type":"string"
+            },
+            "system_entity": {
+               "type":"string"
+            },
+            "autonumber": {
+               "type":"string"
+            },
+            "creategis": {
+               "type":"string"
+            },
+            "has_department_security": {
+               "type":"string"
+            },
+            "has_readonly_department_security_for_createwo": {
+               "type":"string"
+            },
+            "is_gis_webservice_request": {
+               "type":"string"
+            },
+            "is_associated_to_current_consist": {
+               "type":"string"
+            },
+            "is_default_rankings_available": {
+               "type":"string"
+            },
+            "instructure": {
+               "type":"string"
+            },
+            "haswo": {
+               "type":"string"
+            },
+            "confirm_delete_surveryanswers": {
+               "type":"string"
+            },
+            "confirm_delete_qualifications": {
+               "type":"string"
+            },
+            "isParentAssetEnabled": {
+               "type":"string"
+            },
+            "isPositionEnabled": {
+               "type":"string"
+            },
+            "isPrimarySystemEnabled": {
+               "type":"string"
+            },
+            "confirmaddlinearreferences": {
+               "type":"string"
+            },
+            "confirm_availability_status": {
+               "type":"string"
+            },
+            "confirmnewequipmentlength": {
+               "type":"string"
+            }
+         }
+      },
+      "GetAssetEquipmentDefault": {
+        "type": "object",
+         "properties": {
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "RENTALTEMPLATEID_Type": {
+         "type": "object",
+         "required": ["RENTALTEMPLATECODE","ORGANIZATIONID"], 
+         "properties": {
+            "RENTALTEMPLATECODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "FLEETBILLINGID_Type": {
+         "type": "object",
+         "required": ["FLEETBILLINGCODE","ORGANIZATIONID"], 
+         "properties": {
+            "FLEETBILLINGCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "FleetVehicleInfo": {
+         "type": "object",
+         "properties": {
+            "ISVEHICLE": {
+               "type":"string"
+            },
+            "FLEETCUSTOMERID": {
+               "$ref": "#/components/schemas/FLEETCUSTOMERID_Type"
+            },
+            "FLEETBILLINGID": {
+               "$ref": "#/components/schemas/FLEETBILLINGID_Type"
+            },
+            "FLEETMARKUPID": {
+               "$ref": "#/components/schemas/FLEETMARKUPID_Type"
+            },
+            "VEHICLESTATUS": {
+               "$ref": "#/components/schemas/STATUS_Type"
+            },
+            "VEHICLETYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "ISSUETO": {
+               "$ref": "#/components/schemas/PERSONID_Type"
+            },
+            "ISRENTAL": {
+               "type":"string"
+            },
+            "RENTALTEMPLATEID": {
+               "$ref": "#/components/schemas/RENTALTEMPLATEID_Type"
+            },
+            "ISCONTRACT": {
+               "type":"string"
+            },
+            "CONTRACTTEMPLATEID": {
+               "$ref": "#/components/schemas/CONTRACTTEMPLATEID_Type"
+            },
+            "CUSTOMERID": {
+               "$ref": "#/components/schemas/CUSTOMERID_Type"
+            },
+            "AVAILABILITYSTATUS": {
+               "$ref": "#/components/schemas/STATUS_Type"
+            }
+         }
+      },
+      "LocationDependency": {
+         "type": "object",
+         "required": ["DEPENDENTLOCATION"], 
+         "properties": {
+            "DEPENDENTLOCATION": {
+               "$ref": "#/components/schemas/LOCATIONPARENT_Type"
+            },
+            "NONDEPENDENTASSET": {
+               "$ref": "#/components/schemas/ASSETPARENT_Type"
+            },
+            "NONDEPENDENTPOSITION": {
+               "$ref": "#/components/schemas/POSITIONPARENT_Type"
+            },
+            "NONDEPENDENTPRIMARYSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTSYSTEM": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+               }
+            }
+         }
+      },
+      "WORKSPACEID_Type": {
+         "type": "object",
+         "required": ["WORKSPACENUMBER"], 
+         "properties": {
+            "WORKSPACENUMBER": {
+               "type":"string"
+            },
+            "WORKSPACECODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "Variables": {
+         "type": "object",
+         "properties": {
+            "VARIABLE1": {
+               "type":"string"
+            },
+            "VARIABLE2": {
+               "type":"string"
+            },
+            "VARIABLE3": {
+               "type":"string"
+            },
+            "VARIABLE4": {
+               "type":"string"
+            },
+            "VARIABLE5": {
+               "type":"string"
+            },
+            "VARIABLE6": {
+               "type":"string"
+            }
+         }
+      },
+      "PERIODUOM_Type": {
+         "type": "object",
+         "required": ["PERIODUOMCODE"], 
+         "properties": {
+            "PERIODUOMCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "PERFORMANCEDETAILS": {
+         "type": "object",
+         "properties": {
+            "PERFORMANCEFORMULAID": {
+               "$ref": "#/components/schemas/STANDARDENTITYID_Type"
+            },
+            "PERFORMANCE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "CONDITIONRATINGWEIGHT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "CAPACITYCODE": {
+               "$ref": "#/components/schemas/USERDEFINEDCODEID_Type"
+            },
+            "AVAILABLECAPACITY": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "LASTUPDATEDDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "DESIREDCAPACITY": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "CAPACITYRATINGWEIGHT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "NOOFFAILURES": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "MTBFDAYS": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "MTBFRATINGWEIGHT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "MUBF": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "MUBFUOM": {
+               "$ref": "#/components/schemas/UOMID_Type"
+            },
+            "MUBFRATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "MTTRHRS": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "MTTRRATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE1RESULT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE2RESULT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE3RESULT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE4RESULT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE5RESULT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE6RESULT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE1RATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE2RATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE3RATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE4RATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE5RATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "VARIABLE6RATING": {
+               "$ref": "#/components/schemas/QUANTITY"
+            }
+         }
+      },
+      "LOCATIONID_Type": {
+         "type": "object",
+         "required": ["LOCATIONCODE"], 
+         "properties": {
+            "LOCATIONCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "SystemDependency": {
+         "type": "object",
+         "required": ["DEPENDENTSYSTEM"], 
+         "properties": {
+            "DEPENDENTSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTASSET": {
+               "$ref": "#/components/schemas/ASSETPARENT_Type"
+            },
+            "NONDEPENDENTPOSITION": {
+               "$ref": "#/components/schemas/POSITIONPARENT_Type"
+            },
+            "NONDEPENDENTPRIMARYSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTSYSTEM": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+               }
+            }
+         }
+      },
+      "CallCenterDetails": {
+         "type": "object",
+         "properties": {
+            "PENALTYFACTOR": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PENALTYAMOUNT": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "ORGCURRENCY": {
+               "$ref": "#/components/schemas/CURRENCYID_Type"
+            },
+            "CALENDARGROUPID": {
+               "$ref": "#/components/schemas/CALENDARGROUPID_Type"
+            },
+            "SDMFLAG": {
+               "type":"string"
+            },
+            "ENABLESDMCHECK": {
+               "type":"string"
+            }
+         }
+      },
+      "QUANTITY": {
+         "type": "object",
+         "required": ["VALUE","NUMOFDEC","SIGN","UOM"], 
+         "properties": {
+            "VALUE": {
+               "type":"number"
+            },
+            "NUMOFDEC": {
+               "type":"number"
+            },
+            "SIGN": {
+               "type":"string"
+            },
+            "UOM": {
+               "type":"string"
+            },
+            "qualifier": {
+               "type":"string"
+            }
+         }
+      },
+      "ASSEMBLYLEVELID_Type": {
+         "type": "object",
+         "required": ["ASSEMBLYLEVELCODE"], 
+         "properties": {
+            "ASSEMBLYLEVELCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "ENTITYCODEFIELD": {
+         "type": "object",
+         "required": ["CODEVALUE"], 
+         "properties": {
+            "CODEVALUE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "entity": {
+               "type":"string"
+            }
+         }
+      },
+      "UCODEID_Type": {
+         "type": "object",
+         "required": ["UCODE"], 
+         "properties": {
+            "UCODEENTITY": {
+               "type":"string"
+            },
+            "UCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "STANDARDENTITYID_Type": {
+         "type": "object",
+         "properties": {
+            "STANDARDENTITYCODE": {
+               "type":"string"
+            },
+            "REVISIONNUM": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "auto_generated": {
+               "type":"string"
+            },
+            "entity": {
+               "type":"string"
+            }
+         }
+      },
+      "STOREID_Type": {
+         "type": "object",
+         "required": ["STORECODE"], 
+         "properties": {
+            "STORECODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "DORMANT": {
+         "type": "object",
+         "properties": {
+            "DORMANTSTART": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "DORMANTEND": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "DORMANTREUSE": {
+               "type":"string"
+            }
+         }
+      },
+      "DOCUMENTID_Type": {
+         "type": "object",
+         "properties": {
+            "DOCUMENTCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "VMRSASSEMBLYID": {
+         "type": "object",
+         "required": ["SYSTEMLEVELCODE","ASSEMBLYLEVELID"], 
+         "properties": {
+            "SYSTEMLEVELCODE": {
+               "type":"string"
+            },
+            "ASSEMBLYLEVELID": {
+               "$ref": "#/components/schemas/ASSEMBLYLEVELID_Type"
+            }
+         }
+      },
+      "SYSTEMPARENT_Type": {
+         "type": "object",
+         "required": ["SYSTEMID"], 
+         "properties": {
+            "SYSTEMID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "TYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "COSTROLLUP": {
+               "type":"string"
+            },
+            "DEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "LOANEDTODEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "OUTOFSERVICE": {
+               "type":"string"
+            },
+            "recordid": {
+               "type":"number"
+            }
+         }
+      },
+      "CONSISTID_Type": {
+         "type": "object",
+         "required": ["SETCONSISTPK"], 
+         "properties": {
+            "SETCONSISTPK": {
+               "type":"string"
+            },
+            "SETCONSISTCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "ESIGNATURE": {
+         "type": "object",
+         "required": ["USERID","SIGNATURETYPE"], 
+         "properties": {
+            "USERID": {
+               "$ref": "#/components/schemas/USERID_Type"
+            },
+            "PASSWORD": {
+               "type":"string"
+            },
+            "SIGNATURETYPE": {
+               "type":"string"
+            },
+            "CERTTYPE": {
+               "type":"string"
+            },
+            "CERTNO": {
+               "type":"string"
+            },
+            "NOESIGNATURE": {
+               "type":"string"
+            },
+            "EXTERNALDATETIME": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "MFAPASSWORD": {
+               "type":"string"
+            },
+            "EXTERNALUSERID": {
+               "type":"string"
+            },
+            "JSONWEBTOKEN": {
+               "type":"string"
+            }
+         }
+      },
+      "UserDefinedFields": {
+         "type": "object",
+         "properties": {
+            "UDFCHAR01": {
+               "type":"string"
+            },
+            "UDFCHAR02": {
+               "type":"string"
+            },
+            "UDFCHAR03": {
+               "type":"string"
+            },
+            "UDFCHAR04": {
+               "type":"string"
+            },
+            "UDFCHAR05": {
+               "type":"string"
+            },
+            "UDFCHAR06": {
+               "type":"string"
+            },
+            "UDFCHAR07": {
+               "type":"string"
+            },
+            "UDFCHAR08": {
+               "type":"string"
+            },
+            "UDFCHAR09": {
+               "type":"string"
+            },
+            "UDFCHAR10": {
+               "type":"string"
+            },
+            "UDFCHAR11": {
+               "type":"string"
+            },
+            "UDFCHAR12": {
+               "type":"string"
+            },
+            "UDFCHAR13": {
+               "type":"string"
+            },
+            "UDFCHAR14": {
+               "type":"string"
+            },
+            "UDFCHAR15": {
+               "type":"string"
+            },
+            "UDFCHAR16": {
+               "type":"string"
+            },
+            "UDFCHAR17": {
+               "type":"string"
+            },
+            "UDFCHAR18": {
+               "type":"string"
+            },
+            "UDFCHAR19": {
+               "type":"string"
+            },
+            "UDFCHAR20": {
+               "type":"string"
+            },
+            "UDFCHAR21": {
+               "type":"string"
+            },
+            "UDFCHAR22": {
+               "type":"string"
+            },
+            "UDFCHAR23": {
+               "type":"string"
+            },
+            "UDFCHAR24": {
+               "type":"string"
+            },
+            "UDFCHAR25": {
+               "type":"string"
+            },
+            "UDFCHAR26": {
+               "type":"string"
+            },
+            "UDFCHAR27": {
+               "type":"string"
+            },
+            "UDFCHAR28": {
+               "type":"string"
+            },
+            "UDFCHAR29": {
+               "type":"string"
+            },
+            "UDFCHAR30": {
+               "type":"string"
+            },
+            "UDFCHAR31": {
+               "type":"string"
+            },
+            "UDFCHAR32": {
+               "type":"string"
+            },
+            "UDFCHAR33": {
+               "type":"string"
+            },
+            "UDFCHAR34": {
+               "type":"string"
+            },
+            "UDFCHAR35": {
+               "type":"string"
+            },
+            "UDFCHAR36": {
+               "type":"string"
+            },
+            "UDFCHAR37": {
+               "type":"string"
+            },
+            "UDFCHAR38": {
+               "type":"string"
+            },
+            "UDFCHAR39": {
+               "type":"string"
+            },
+            "UDFCHAR40": {
+               "type":"string"
+            },
+            "UDFCHAR41": {
+               "type":"string"
+            },
+            "UDFCHAR42": {
+               "type":"string"
+            },
+            "UDFCHAR43": {
+               "type":"string"
+            },
+            "UDFCHAR44": {
+               "type":"string"
+            },
+            "UDFCHAR45": {
+               "type":"string"
+            },
+            "UDFCHAR46": {
+               "type":"string"
+            },
+            "UDFCHAR47": {
+               "type":"string"
+            },
+            "UDFCHAR48": {
+               "type":"string"
+            },
+            "UDFCHAR49": {
+               "type":"string"
+            },
+            "UDFCHAR50": {
+               "type":"string"
+            },
+            "UDFCHAR51": {
+               "type":"string"
+            },
+            "UDFCHAR52": {
+               "type":"string"
+            },
+            "UDFCHAR53": {
+               "type":"string"
+            },
+            "UDFCHAR54": {
+               "type":"string"
+            },
+            "UDFCHAR55": {
+               "type":"string"
+            },
+            "UDFNUM01": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM02": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM03": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM04": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM05": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM06": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM07": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM08": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM09": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFNUM10": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "UDFDATE01": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE02": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE03": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE04": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE05": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE06": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE07": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE08": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE09": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFDATE10": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "UDFCHKBOX01": {
+               "type":"string"
+            },
+            "UDFCHKBOX02": {
+               "type":"string"
+            },
+            "UDFCHKBOX03": {
+               "type":"string"
+            },
+            "UDFCHKBOX04": {
+               "type":"string"
+            },
+            "UDFCHKBOX05": {
+               "type":"string"
+            },
+            "UDFCHKBOX06": {
+               "type":"string"
+            },
+            "UDFCHKBOX07": {
+               "type":"string"
+            },
+            "UDFCHKBOX08": {
+               "type":"string"
+            },
+            "UDFCHKBOX09": {
+               "type":"string"
+            },
+            "UDFCHKBOX10": {
+               "type":"string"
+            },
+            "UDFNOTE01": {
+               "type":"string"
+            },
+            "UDFNOTE02": {
+               "type":"string"
+            }
+         }
+      },
+      "COSTCODEID_Type": {
+         "type": "object",
+         "required": ["COSTCODE"], 
+         "properties": {
+            "COSTCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "FacilityConditionIndex": {
+         "type": "object",
+         "properties": {
+            "COSTOFNEEDEDREPAIRS": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "REPLACEMENTVALUE": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "FACILITYCONDITIONINDEX": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "UTILITYBILLLEVEL": {
+               "type":"string"
+            },
+            "GASTRACKED": {
+               "type":"string"
+            },
+            "FLOORAREA": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "FLOORAREAUOM": {
+               "$ref": "#/components/schemas/UOMID_Type"
+            },
+            "ESTIMATEDREVENUE": {
+               "$ref": "#/components/schemas/AMOUNT"
+            },
+            "REGION": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "REGIONID": {
+               "$ref": "#/components/schemas/REGIONID_Type"
+            },
+            "PRIMARYUSE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "YEARBUILT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "SERVICELIFE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "ENERGYSTARELIGIBLE": {
+               "type":"string"
+            },
+            "ISFACILITY": {
+               "type":"string"
+            },
+            "COUNTRYID": {
+               "$ref": "#/components/schemas/QUANTITY"
+            }
+         }
+      },
+      "LOVSETTINGS": {
+         "type": "object",
+         "required": ["LOV_TYPE","LOV_VALIDATE"], 
+         "properties": {
+            "LOV_TYPE": {
+               "type":"string"
+            },
+            "LOV_VALIDATE": {
+               "type":"string"
+            }
+         }
+      },
+      "VMRSCOMPNENTID": {
+         "type": "object",
+         "required": ["SYSTEMLEVELCODE","ASSEMBLYLEVELCODE","COMPONENTLEVELID"], 
+         "properties": {
+            "SYSTEMLEVELCODE": {
+               "type":"string"
+            },
+            "ASSEMBLYLEVELCODE": {
+               "type":"string"
+            },
+            "COMPONENTLEVELID": {
+               "$ref": "#/components/schemas/COMPONENTLEVELID_Type"
+            }
+         }
+      },
+      "ADDRESSID": {
+         "type": "object",
+         "required": ["CODE","ENTITY","TYPE"], 
+         "properties": {
+            "CODE": {
+               "type":"string"
+            },
+            "ENTITY": {
+               "type":"string"
+            },
+            "TYPE": {
+               "type":"string"
+            }
+         }
+      },
+      "CODEDESCFIELD": {
+         "type": "object",
+         "required": ["CODEVALUE"], 
+         "properties": {
+            "CODEVALUE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "RELIABILITYRANKINGDETAILS_Type": {
+         "type": "object",
+         "properties": {
+            "RELIABILITYRANKINGLOCKED": {
+               "type":"string"
+            },
+            "RELIABILITYRANKINGINDEXCODE": {
+               "type":"string"
+            },
+            "RELIABILITYRANKINGID": {
+               "$ref": "#/components/schemas/RELIABILITYRANKINGID_Type"
+            },
+            "RELIABILITYRANKINGSCORE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "OUTOFSYNC": {
+               "type":"string"
+            },
+            "SETUPLASTUPDATEDDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "SURVEYLASTUPDATEDDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "VALUESLASTCALCULATEDDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            }
+         }
+      },
+      "LINEARUOMID_Type": {
+         "type": "object",
+         "required": ["LINEARREFUOM"], 
+         "properties": {
+            "LINEARREFUOM": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "ASSETPARENT_Type": {
+         "type": "object",
+         "required": ["ASSETID"], 
+         "properties": {
+            "ASSETID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "TYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "COSTROLLUP": {
+               "type":"string"
+            },
+            "DEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "LOANEDTODEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "OUTOFSERVICE": {
+               "type":"string"
+            },
+            "recordid": {
+               "type":"number"
+            }
+         }
+      },
+      "CNID": {
+         "type": "object",
+         "required": ["CNNUMBER"], 
+         "properties": {
+            "CNNUMBER": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "CURRENCYID_Type": {
+         "type": "object",
+         "required": ["CURRENCYCODE"], 
+         "properties": {
+            "CURRENCYCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "USERDEFINEDAREA": {
+         "type": "object",
+         "properties": {
+            "CUSTOMFIELD": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/CUSTOMFIELD"
+               } 
+            },
+            "STATUSCODE": {
+               "type":"string"
+            },
+            "customfieldlimitexceeded": {
+               "type":"string"
+            }
+         }
+      },
+      "CUSTOMFIELD": {
+        "required": ["PROPERTYCODE","PROPERTYLABEL","CLASSID"], 
+        "type": "object",
+         "properties": {
+            "PROPERTYCODE": {
+               "type":"string"
+            },
+            "PROPERTYLABEL": {
+               "type":"string"
+            },
+            "CLASSID": {
+               "$ref": "#/components/schemas/CLASSID_Type"
+            },
+            "DATEFIELD": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "DATETIMEFIELD": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "NUMBERFIELD": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "TEXTFIELD": {
+               "type":"string"
+            },
+            "CODEDESCFIELD": {
+               "$ref": "#/components/schemas/CODEDESCFIELD"
+            },
+            "ENTITYCODEFIELD": {
+               "$ref": "#/components/schemas/ENTITYCODEFIELD"
+            },
+            "MAXVALUE": {
+               "type":"string"
+            },
+            "MINVALUE": {
+               "type":"string"
+            },
+            "UOM": {
+               "type":"string"
+            },
+            "LOVSETTINGS": {
+               "$ref": "#/components/schemas/LOVSETTINGS"
+            },
+            "VALUESOURCE": {
+               "$ref": "#/components/schemas/VALUESOURCE"
+            },
+            "GROUPLABEL": {
+               "type":"string"
+            },
+            "CUSTOMFIELDREVISIONCONTROL": {
+               "type":"string"
+            },
+            "index": {
+               "type":"number"
+            },
+            "entity": {
+               "type":"string"
+            },
+            "type": {
+               "type":"string"
+            },
+            "changed": {
+               "type":"string"
+            }
+         }
+      },
+      "PositionDependency": {
+         "type": "object",
+         "required": ["DEPENDENTPOSITION"], 
+         "properties": {
+            "DEPENDENTPOSITION": {
+               "$ref": "#/components/schemas/POSITIONPARENT_Type"
+            },
+            "NONDEPENDENTASSET": {
+               "$ref": "#/components/schemas/ASSETPARENT_Type"
+            },
+            "NONDEPENDENTPRIMARYSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTSYSTEM": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+               }
+            }
+         }
+      },
+      "PERSONID_Type": {
+         "type": "object",
+         "required": ["PERSONCODE"], 
+         "properties": {
+            "PERSONCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "PURCHASEORDERLINEID_Type": {
+         "type": "object",
+         "required": ["PURCHASEORDERID"], 
+         "properties": {
+            "PURCHASEORDERID": {
+               "$ref": "#/components/schemas/PURCHASEORDERID_Type"
+            },
+            "PURCHASEORDERLINENUM": {
+               "type":"number"
+            }
+         }
+      },
+      "UOMID_Type": {
+         "type": "object",
+         "required": ["UOMCODE"], 
+         "properties": {
+            "UOMCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "CUSTOMERID_Type": {
+         "type": "object",
+         "required": ["CUSTOMERCODE"], 
+         "properties": {
+            "CUSTOMERCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "RELIABILITYRANKINGID_Type": {
+         "type": "object",
+         "required": ["RELIABILITYRANKINGCODE","ORGANIZATIONID"], 
+         "properties": {
+            "RELIABILITYRANKINGCODE": {
+               "type":"string"
+            },
+            "RELIABILITYRANKINGREVISION": {
+               "type":"number"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "OBJECT_Type": {
+         "type": "object",
+         "required": ["OBJECTCODE"], 
+         "properties": {
+            "OBJECTCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "AssetParentHierarchy": {
+         "type": "object",
+         "properties": {
+            "ASSETID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "TYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "LOCATIONID": {
+               "$ref": "#/components/schemas/LOCATIONID_Type"
+            },
+            "POSITIONPARENT": {
+               "type":"string"
+            }
+            },
+         "oneOf": [
+         {
+           "type": "object",
+           "properties": {
+              "AssetDependency": {
+               "$ref": "#/components/schemas/AssetDependency"
+            }
+            }
+            },
+         {
+           "type": "object",
+           "properties": {
+              "PositionDependency": {
+               "$ref": "#/components/schemas/PositionDependency"
+            }
+            }
+            },
+         {
+           "type": "object",
+           "properties": {
+              "PrimarySystemDependency": {
+               "$ref": "#/components/schemas/PrimarySystemDependency"
+            }
+            }
+            },
+         {
+           "type": "object",
+           "properties": {
+              "SystemDependency": {
+               "$ref": "#/components/schemas/SystemDependency"
+            }
+            }
+            },
+         {
+           "type": "object",
+           "properties": {
+              "LocationDependency": {
+               "$ref": "#/components/schemas/LocationDependency"
+            }
+            }
+            },
+         {
+           "type": "object",
+           "properties": {
+              "NonDependentParents": {
+               "$ref": "#/components/schemas/NonDependentParents_Type"
+            }
+            }
+            }
+         ]
+      },
+      "Employee_Type": {
+         "type": "object",
+         "required": ["EMPLOYEECODE"], 
+         "properties": {
+            "EMPLOYEECODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "COMPONENTLEVELID_Type": {
+         "type": "object",
+         "required": ["COMPONENTLEVELCODE"], 
+         "properties": {
+            "COMPONENTLEVELCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "EnergyPerformance": {
+         "type": "object",
+         "properties": {
+            "TARGETPOWERFACTOR": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "TARGETPEAKDEMAND": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "BILLINGPERIODSTARTDATE": {
+               "$ref": "#/components/schemas/DATETIME"
+            },
+            "BILLEVERYPERIOD": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "BILLEVERYUOM": {
+               "$ref": "#/components/schemas/PERIODUOM_Type"
+            },
+            "PHASEIMBALANCEEFFICIENCYLOSS1": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PHASEIMBALANCEEFFICIENCYLOSS2": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PHASEIMBALANCEEFFICIENCYLOSS3": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PHASEIMBALANCEEFFICIENCYLOSS4": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PHASEIMBALANCEEFFICIENCYLOSS5": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "PERFORMANCEMANAGER": {
+               "$ref": "#/components/schemas/PERSONID_Type"
+            },
+            "ELECTRICSUBMETERINTERVAL": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "ELECTRICUSAGETHRESHOLD": {
+               "$ref": "#/components/schemas/QUANTITY"
+            }
+         }
+      },
+      "CATEGORYID": {
+         "type": "object",
+         "required": ["CATEGORYCODE"], 
+         "properties": {
+            "CATEGORYCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "SYSTEMLEVELID_Type": {
+         "type": "object",
+         "required": ["SYSTEMLEVELCODE"], 
+         "properties": {
+            "SYSTEMLEVELCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "RISKMATRIXSETUPID_Type": {
+         "type": "object",
+         "required": ["RISKMATRIXSETUPCODE"], 
+         "properties": {
+            "RISKMATRIXSETUPCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "AssetDependency": {
+         "type": "object",
+         "required": ["DEPENDENTASSET"], 
+         "properties": {
+            "DEPENDENTASSET": {
+               "$ref": "#/components/schemas/ASSETPARENT_Type"
+            },
+            "NONDEPENDENTPOSITION": {
+               "$ref": "#/components/schemas/POSITIONPARENT_Type"
+            },
+            "NONDEPENDENTPRIMARYSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTSYSTEM": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+               }
+            }
+         }
+      },
+      "APPROVALLISTID_Type": {
+         "type": "object",
+         "required": ["APPROVALLISTCODE"], 
+         "properties": {
+            "APPROVALLISTCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "LINEARREFERENCEDETAILS_Type": {
+         "type": "object",
+         "properties": {
+            "EQUIPMENTLENGTH": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "EQUIPMENTLENGTHUOM": {
+               "type":"string"
+            },
+            "LINEARREFUOM": {
+               "type":"string"
+            },
+            "LINEARREFPRECISION": {
+               "type":"number"
+            },
+            "GEOGRAPHICALREFERENCE": {
+               "type":"string"
+            },
+            "INSPECTIONDIRECTIONCODE": {
+               "type":"string"
+            },
+            "FLOWCODE": {
+               "type":"string"
+            },
+            "LINEARCOSTWEIGHT": {
+               "type":"number"
+            },
+            "LRFFROMPOINT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "LRFTOPOINT": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "LINEARDIRECTIONID": {
+               "$ref": "#/components/schemas/UCODEID_Type"
+            },
+            "LINEAREQUIPMENTTYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            }
+         }
+      },
+      "EQUIPMENTID_Type": {
+         "type": "object",
+         "required": ["EQUIPMENTCODE"], 
+         "properties": {
+            "EQUIPMENTCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "USERID_Type": {
+         "type": "object",
+         "required": ["USERCODE"], 
+         "properties": {
+            "USERCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "VMRSCODE_Type": {
+         "type": "object",
+         "properties": {
+            "SYSTEMLEVELID": {
+               "$ref": "#/components/schemas/SYSTEMLEVELID_Type"
+            },
+            "VMRSASSEMBLYID": {
+               "$ref": "#/components/schemas/VMRSASSEMBLYID"
+            },
+            "VMRSCOMPNENTID": {
+               "$ref": "#/components/schemas/VMRSCOMPNENTID"
+            }
+         }
+      },
+      "USERDEFINEDCODEID_Type": {
+         "type": "object",
+         "required": ["USERDEFINEDCODE"], 
+         "properties": {
+            "ENTITY": {
+               "type":"string"
+            },
+            "USERDEFINEDCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "DATETIME": {
+         "type": "object",
+         "required": ["YEAR","MONTH","DAY","HOUR","MINUTE","SECOND","SUBSECOND","TIMEZONE"], 
+         "properties": {
+            "YEAR": {
+               "type":"number","format":"utc-millisec"
+            },
+            "MONTH": {
+               "type":"number"
+            },
+            "DAY": {
+               "type":"number"
+            },
+            "HOUR": {
+               "type":"number"
+            },
+            "MINUTE": {
+               "type":"number"
+            },
+            "SECOND": {
+               "type":"number"
+            },
+            "SUBSECOND": {
+               "type":"number"
+            },
+            "TIMEZONE": {
+               "type":"string"
+            },
+            "qualifier": {
+               "type":"string","enum":["ACCOUNTING","ACTEND","ACTSTART","APPREQ","APPROVAL","AVAILABLE","BKTEND","BKTSTART","CANCEL","CHANGEDATE","COMPDATE","CONSUME","CREATION","CUMULATIVE","DELIVACT","DELIVSCHED","DISCNT","DOCUMENT","DUE","EARLSTEFF","EARLSTSHIP","EFFECTIVE","ENGCHG","EXECFINISH","EXECSTART","EXPIRATION","FAILDATE","FORECASTF","FORECASTS","FROM","GENERATION","JOBDUE","IMPL","INVOICE","LABORFINSH","LABORSTART","LASTUSED","LOADING","MATCHING","MSMENTDATE","NEEDDELV","OPFINISH","OPSTART","PAYEND","PLANEND","PLANSTART","PO","PROMDELV","PROMSHIP","PYMTTERM","RECEIVED","REPORTDATE","REPORTNGFN","REPORTNGST","REQUIRED","RESORCDWNF","RESORCDWNS","RSPDDATE","RSPDOCGEN","SCHEND","SCHSTART","SETUPFINSH","SETUPSTART","SHIP","SHIPSCHED","STATUSDATE","TEARDOWNF","TEARDOWNS","TO","OTHER"]
+            }
+         }
+      },
+      "ManufacturerInfo": {
+         "type": "object",
+         "properties": {
+            "MANUFACTURERCODE": {
+               "type":"string"
+            },
+            "SERIALNUMBER": {
+               "type":"string"
+            },
+            "MODEL": {
+               "type":"string"
+            },
+            "MODELREVISION": {
+               "type":"string"
+            },
+            "XCOORDINATE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "YCOORDINATE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "ZCOORDINATE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            }
+         }
+      },
+      "PrimarySystemDependency": {
+         "type": "object",
+         "required": ["DEPENDENTPRIMARYSYSTEM"], 
+         "properties": {
+            "DEPENDENTPRIMARYSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTASSET": {
+               "$ref": "#/components/schemas/ASSETPARENT_Type"
+            },
+            "NONDEPENDENTPOSITION": {
+               "$ref": "#/components/schemas/POSITIONPARENT_Type"
+            },
+            "NONDEPENDENTSYSTEM": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+               }
+            }
+         }
+      },
+      "EQUIPMENTSTATEID": {
+         "type": "object",
+         "required": ["STATECODE"], 
+         "properties": {
+            "STATECODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "FLEETMARKUPID_Type": {
+         "type": "object",
+         "required": ["FLEETMARKUPCODE"], 
+         "properties": {
+            "FLEETMARKUPCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "DEPARTMENTID_Type": {
+         "type": "object",
+         "required": ["DEPARTMENTCODE"], 
+         "properties": {
+            "DEPARTMENTCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "EQUIPMENTCONFIGURATIONID_Type": {
+         "type": "object",
+         "required": ["EQUIPMENTCONFIGURATIONCODE","ORGANIZATIONID","REVISIONNUM"], 
+         "properties": {
+            "EQUIPMENTCONFIGURATIONCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "REVISIONNUM": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "FUELID_Type": {
+         "type": "object",
+         "required": ["FUELCODE"], 
+         "properties": {
+            "FUELCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "CALENDARGROUPID_Type": {
+         "type": "object",
+         "required": ["CALENDARGROUPCODE","ORGANIZATIONID"], 
+         "properties": {
+            "CALENDARGROUPCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "PURCHASEORDERID_Type": {
+         "type": "object",
+         "required": ["PURCHASEORDERCODE","ORGANIZATIONID"], 
+         "properties": {
+            "PURCHASEORDERCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "TYPE_Type": {
+         "type": "object",
+         "required": ["TYPECODE"], 
+         "properties": {
+            "TYPECODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "STATUS_Type": {
+         "type": "object",
+         "required": ["STATUSCODE"], 
+         "properties": {
+            "STATUSCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "POSITIONPARENT_Type": {
+         "type": "object",
+         "required": ["POSITIONID"], 
+         "properties": {
+            "POSITIONID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "TYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "COSTROLLUP": {
+               "type":"string"
+            },
+            "DEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "LOANEDTODEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "OUTOFSERVICE": {
+               "type":"string"
+            },
+            "recordid": {
+               "type":"number"
+            }
+         }
+      },
+      "PARTID_Type": {
+         "type": "object",
+         "required": ["PARTCODE"], 
+         "properties": {
+            "PARTCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "NonDependentParents_Type": {
+         "type": "object",
+         "properties": {
+            "NONDEPENDENTASSET": {
+               "$ref": "#/components/schemas/ASSETPARENT_Type"
+            },
+            "NONDEPENDENTPOSITION": {
+               "$ref": "#/components/schemas/POSITIONPARENT_Type"
+            },
+            "NONDEPENDENTPRIMARYSYSTEM": {
+               "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+            },
+            "NONDEPENDENTSYSTEM": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/SYSTEMPARENT_Type"
+               }
+            }
+         }
+      },
+      "REGIONID_Type": {
+         "type": "object",
+         "required": ["REGIONCODE"], 
+         "properties": {
+            "REGIONCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "PartAssociation": {
+         "type": "object",
+         "required": ["PARTID"], 
+         "properties": {
+            "PARTID": {
+               "$ref": "#/components/schemas/PARTID_Type"
+            },
+            "STORELOCATION": {
+               "$ref": "#/components/schemas/STORELOCATION"
+            },
+            "is_bylot": {
+               "type":"string"
+            }
+         }
+      },
+      "AMOUNT": {
+         "type": "object",
+         "required": ["VALUE","NUMOFDEC","SIGN","CURRENCY","DRCR"], 
+         "properties": {
+            "VALUE": {
+               "type":"number"
+            },
+            "NUMOFDEC": {
+               "type":"number"
+            },
+            "SIGN": {
+               "type":"string"
+            },
+            "CURRENCY": {
+               "type":"string"
+            },
+            "DRCR": {
+               "type":"string"
+            },
+            "qualifier": {
+               "type":"string"
+            },
+            "type": {
+               "type":"string"
+            },
+            "index": {
+               "type":"string"
+            }
+         }
+      },
+      "PurchaseOrderInfo": {
+         "type": "object",
+         "properties": {
+            "PURCHASEORDERLINEID": {
+               "$ref": "#/components/schemas/PURCHASEORDERLINEID_Type"
+            }
+         }
+      },
+      "TransferEquipment": {
+           "type": "object",
+           "properties": {
+      "TransferEquipment": {
+         "type": "object",
+         "properties": {
+            "CURRENTEQUIPMENTID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "NEWEQUIPMENTID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "STATUS": {
+               "$ref": "#/components/schemas/STATUS_Type"
+            },
+            "DEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "PARTID": {
+               "$ref": "#/components/schemas/PARTID_Type"
+            },
+            "COSTCODEID": {
+               "$ref": "#/components/schemas/COSTCODEID_Type"
+            },
+            "MANUFACTURERID": {
+               "$ref": "#/components/schemas/MANUFACTURERID_Type"
+            }
+         }
+      },
+            "ESIGNATURE" : {
+                        "$ref" : "#/components/schemas/ESIGNATURE"
+            },
+            "confirm_noexchangerateexist" : {
+                        "type" : "string"
+            }
+         }
+      },
+      "MANUFACTURERID_Type": {
+        "required": ["MANUFACTURERCODE"], 
+        "type": "object",
+         "properties": {
+            "MANUFACTURERCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "VALUESOURCE": {
+         "type": "object",
+         "required": ["CATVALUE","NONUPDATEABLE"], 
+         "properties": {
+            "CATVALUE": {
+               "type":"string"
+            },
+            "NONUPDATEABLE": {
+               "type":"string"
+            }
+         }
+      },
+      "CRITICALITYID_Type": {
+         "type": "object",
+         "required": ["CRITICALITY"], 
+         "properties": {
+            "CRITICALITY": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "CONTRACTTEMPLATEID_Type": {
+         "type": "object",
+         "required": ["CONTRACTTEMPLATECODE","ORGANIZATIONID"], 
+         "properties": {
+            "CONTRACTTEMPLATECODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "GISMAPID_Type": {
+         "type": "object",
+         "required": ["GISMAPCODE","ORGANIZATIONID"], 
+         "properties": {
+            "GISMAPCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "STORELOCATION": {
+         "type": "object",
+         "properties": {
+            "STOREID": {
+               "$ref": "#/components/schemas/STOREID_Type"
+            },
+            "BIN": {
+               "type":"string"
+            },
+            "LOT": {
+               "type":"string"
+            }
+         }
+      },
+      "ORGANIZATIONID_Type": {
+         "type": "object",
+         "required": ["ORGANIZATIONCODE"], 
+         "properties": {
+            "ORGANIZATIONCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "CLASSID_Type": {
+         "type": "object",
+         "required": ["CLASSCODE"], 
+         "properties": {
+            "CLASSCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "LOCATIONPARENT_Type": {
+         "type": "object",
+         "required": ["LOCATIONID"], 
+         "properties": {
+            "LOCATIONID": {
+               "$ref": "#/components/schemas/LOCATIONID_Type"
+            },
+            "TYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "COSTROLLUP": {
+               "type":"string"
+            },
+            "DEPARTMENTID": {
+               "$ref": "#/components/schemas/DEPARTMENTID_Type"
+            },
+            "OUTOFSERVICE": {
+               "type":"string"
+            },
+            "recordid": {
+               "type":"number"
+            }
+         }
+      },
+      "FLEETCUSTOMERID_Type": {
+         "type": "object",
+         "required": ["FLEETCUSTOMERCODE","ORGANIZATIONID"], 
+         "properties": {
+            "FLEETCUSTOMERCODE": {
+               "type":"string"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            }
+         }
+      },
+      "WorkflowSummaryInfo": {
+         "type": "object",
+         "required": ["WORKFLOWSUMMARY","WORKFLOWRENTITY"], 
+         "properties": {
+            "WORKFLOWSUMMARY": {
+               "type":"string"
+            },
+            "WORKFLOWRENTITY": {
+               "type":"string"
+            }
+         }
+      },
+      "ChangeEquipmentNumber": {
+           "type": "object",
+           "properties": {
+      "ChangeEquipmentNumber": {
+         "type": "object",
+         "properties": {
+            "CURRENTEQUIPMENTID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "NEWEQUIPMENTID": {
+               "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "CURRENTEQUIPMENTTYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            },
+            "NEWEQUIPMENTTYPE": {
+               "$ref": "#/components/schemas/TYPE_Type"
+            }
+         }
+      }
+         }
+      },
+      "Addresses": {
+        "required": ["ADDRESSID"], 
+        "type": "object",
+         "properties": {
+            "ADDRESSID": {
+               "$ref": "#/components/schemas/ADDRESSID"
+            },
+            "TEXT": {
+               "type":"string"
+            },
+            "ADDRESS1": {
+               "type":"string"
+            },
+            "ADDRESS2": {
+               "type":"string"
+            },
+            "ADDRESS3": {
+               "type":"string"
+            },
+            "CITY": {
+               "type":"string"
+            },
+            "STATE": {
+               "type":"string"
+            },
+            "ZIP": {
+               "type":"string"
+            },
+            "COUNTRY": {
+               "type":"string"
+            },
+            "PHONE": {
+               "type":"string"
+            },
+            "PHONEEXT": {
+               "type":"string"
+            },
+            "FAX": {
+               "type":"string"
+            },
+            "EMAIL": {
+               "type":"string"
+            },
+            "LATITUDE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "LONGITUDE": {
+               "$ref": "#/components/schemas/QUANTITY"
+            },
+            "updatecount": {
+               "type":"number"
+            }
+         }
+      },
+      "TRANSFERCODEID_Type": {
+        "required": ["TRANSFERCODE"], 
+        "type": "object",
+         "properties": {
+            "TRANSFERCODE": {
+               "type":"string"
+            },
+            "ORGANIZATIONID": {
+               "$ref": "#/components/schemas/ORGANIZATIONID_Type"
+            },
+            "DESCRIPTION": {
+               "type":"string"
+            }
+         }
+      },
+      "ALERT_Type": {
+        "type": "object",
+         "properties": {
+            "Message": {
+               "type":"string"
+            },
+            "Name": {
+               "type":"string"
+            }
+         }
+      },
+      "AddResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/AddResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "SyncResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/SyncResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "GetCollectionResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/GetCollectionResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "GetResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/GetResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "DeleteResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/DeleteResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "GetDefaultResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/GetDefaultResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "TransferEquipmentResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/TransferEquipmentResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "ChangeEquipmentNumberResponse": {
+        "type": "object",
+         "properties": {
+            "Result": {
+               "$ref": "#/components/schemas/ChangeEquipmentNumberResult"
+            },
+            "ConfirmationAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "ErrorAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+                } 
+            }
+         }
+      },
+      "AddResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/AddResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "SyncResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/SyncResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "GetCollectionResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/GetCollectionResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "GetResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/GetResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "DeleteResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/DeleteResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "GetDefaultResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/GetDefaultResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "TransferEquipmentResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/TransferEquipmentResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "ChangeEquipmentNumberResult": {
+         "type": "object",
+         "properties": {
+            "SessionID": {
+               "type":"string"
+            },
+            "ResultData": {
+               "$ref": "#/components/schemas/ChangeEquipmentNumberResultData"
+            },
+            "InfoAlert": {
+               "$ref": "#/components/schemas/ALERT_Type"
+            },
+            "WarningAlert": {
+               "type":"array",
+               "items": {
+                  "$ref": "#/components/schemas/ALERT_Type"
+               }
+            }
+         }
+      },
+      "AddResultData": {
+         "type": "object",
+         "properties": {
+            "ASSETID": {
+                  "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "multiorg": {
+                  "type":"string"
+            },
+            "addgisasset": {
+                  "type":"string"
+            },
+            "gisobjid": {
+                  "type":"integer"
+            }
+         }
+      },
+      "SyncResultData": {
+         "type": "object",
+         "properties": {
+            "AssetEquipment": {
+                  "$ref": "#/components/schemas/AssetEquipment"
+            },
+            "multiorg": {
+                  "type":"string"
+            }
+         }
+      },
+      "GetCollectionResultData": {
+        "type": "object",
+         "properties": {
+            "DATAENTITYNAME": {
+               "type":"string"
+            },
+            "CURRENTCURSORPOSITION": {
+               "type":"number"
+            },
+            "NEXTCURSORPOSITION": {
+               "type":"number"
+            },
+            "RECORDS": {
+               "type":"number"
+            },
+            "DATARECORD": {
+               "type":"array",
+               "items": {
+                   "$ref": "#/components/schemas/AssetEquipment"
+                }
+            }
+         }
+      },
+      "GetResultData": {
+         "type": "object",
+         "properties": {
+            "AssetEquipment": {
+                  "$ref": "#/components/schemas/AssetEquipment"
+            },
+            "Addresses": {
+                  "$ref": "#/components/schemas/Addresses"
+            },
+            "multiorg": {
+                  "type":"string"
+            }
+         }
+      },
+      "DeleteResultData": {
+         "type": "object",
+         "properties": {
+            "ASSETID": {
+                  "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "multiorg": {
+                  "type":"string"
+            }
+         }
+      },
+      "GetDefaultResultData": {
+         "type": "object",
+         "properties": {
+            "AssetEquipment": {
+                  "$ref": "#/components/schemas/AssetEquipment"
+            },
+            "multiorg": {
+                  "type":"string"
+            },
+            "autonumber": {
+                  "type":"string"
+            }
+         }
+      },
+      "TransferEquipmentResultData": {
+         "type": "object",
+         "properties": {
+            "NEWEQUIPMENTID": {
+                  "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "TRANSFERCODEID": {
+                  "$ref": "#/components/schemas/TRANSFERCODEID_Type"
+            }
+         }
+      },
+      "ChangeEquipmentNumberResultData": {
+         "type": "object",
+         "properties": {
+            "NEWEQUIPMENTID": {
+                  "$ref": "#/components/schemas/EQUIPMENTID_Type"
+            },
+            "NEWEQUIPMENTTYPE": {
+                  "$ref": "#/components/schemas/TYPE_Type"
+            }
+         }
+      }
+    },
+
+  "examples" : {
+    "example2" : {
+      "summary" : "An example with required fields",
+      "value" : {
+        "ASSETID" : {
+          "EQUIPMENTCODE" : "ASSET-1",
+          "ORGANIZATIONID" : {
+            "ORGANIZATIONCODE" : "*",
+            "DESCRIPTION" : "Default organization",
+            "entity" : "AssetEquipment"
+          },
+          "DESCRIPTION" : "Test Asset 1"
+        },
+        "TYPE" : {
+          "TYPECODE" : "A",
+          "DESCRIPTION" : "Asset",
+          "entity" : null
+        },
+        "STATUS" : {
+          "STATUSCODE" : "I",
+          "DESCRIPTION" : "Installed",
+          "entity" : null
+        },
+        "DEPARTMENTID" : {
+          "DEPARTMENTCODE" : "*",
+          "ORGANIZATIONID" : null,
+          "DESCRIPTION" : "DEFAULT / ALL DEPARTMENTS"
+        },
+        "COMMISSIONDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 6,
+          "DAY" : 27,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "recordid" : 0
+      }
+    },
+    "example1" : {
+      "summary" : "An example with sample fields",
+      "value" : {
+        "ASSETID" : {
+          "EQUIPMENTCODE" : "ASSET-1",
+          "ORGANIZATIONID" : {
+            "ORGANIZATIONCODE" : "*",
+            "DESCRIPTION" : "Default organization",
+            "entity" : "AssetEquipment"
+          },
+          "DESCRIPTION" : "Asset1"
+        },
+        "TYPE" : {
+          "TYPECODE" : "A",
+          "DESCRIPTION" : "Asset",
+          "entity" : null
+        },
+        "CLASSID" : {
+          "CLASSCODE" : "*",
+          "ORGANIZATIONID" : {
+            "ORGANIZATIONCODE" : "*",
+            "DESCRIPTION" : "Default organization",
+            "entity" : "Class"
+          },
+          "DESCRIPTION" : "All classes",
+          "entity" : "OBJ"
+        },
+        "STATUS" : {
+          "STATUSCODE" : "I",
+          "DESCRIPTION" : "Installed",
+          "entity" : null
+        },
+        "DEPARTMENTID" : {
+          "DEPARTMENTCODE" : "*",
+          "ORGANIZATIONID" : null,
+          "DESCRIPTION" : "DEFAULT / ALL DEPARTMENTS"
+        },
+        "OPERATIONALSTATUS" : {
+          "STATUSCODE" : "NO",
+          "DESCRIPTION" : null,
+          "entity" : null
+        },
+        "LOANEDTODEPARTMENTID" : {
+          "DEPARTMENTCODE" : "*",
+          "ORGANIZATIONID" : null,
+          "DESCRIPTION" : null
+        },
+        "PMWODEPARTMENTID" : {
+          "DEPARTMENTCODE" : "*",
+          "ORGANIZATIONID" : null,
+          "DESCRIPTION" : null
+        },
+        "CATEGORYID" : {
+          "CATEGORYCODE" : "CAT1",
+          "DESCRIPTION" : "CAT1"
+        },
+        "PROFILEID" : {
+          "OBJECTCODE" : "10000",
+          "ORGANIZATIONID" : {
+            "ORGANIZATIONCODE" : "*",
+            "DESCRIPTION" : "Default organization",
+            "entity" : "EquipmentProfile"
+          },
+          "DESCRIPTION" : "test config 1"
+        },
+        "INPRODUCTION" : "false",
+        "SAFETY" : "false",
+        "OUTOFSERVICE" : "false",
+        "COSTCODEID" : null,
+        "COMMISSIONDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "TRANSFERDATE" : null,
+        "WITHDRAWALDATE" : null,
+        "ASSETVALUE" : {
+          "VALUE" : 8000000,
+          "NUMOFDEC" : 6,
+          "SIGN" : "+",
+          "CURRENCY" : "USD",
+          "DRCR" : "D",
+          "qualifier" : "OTHER",
+          "type" : null,
+          "index" : null
+        },
+        "ASSIGNEDTO" : {
+          "PERSONCODE" : "EMP1",
+          "DESCRIPTION" : "EMP1"
+        },
+        "METERUNIT" : "EA",
+        "CRITICALITYID" : {
+          "CRITICALITY" : "*",
+          "DESCRIPTION" : "Equipment criticality"
+        },
+        "SOLDDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "DORMANT" : {
+          "DORMANTSTART" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "DORMANTEND" : {
+            "YEAR" : 1735669800000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "DORMANTREUSE" : "false"
+        },
+        "INVENTORYVERIFICATIONDATE" : null,
+        "PartAssociation" : {
+          "PARTID" : {
+            "PARTCODE" : "SWAGPART",
+            "ORGANIZATIONID" : {
+              "ORGANIZATIONCODE" : "*",
+              "DESCRIPTION" : "Default organization",
+              "entity" : "Part"
+            },
+            "DESCRIPTION" : "swagpart"
+          },
+          "STORELOCATION" : {
+            "STOREID" : {
+              "STORECODE" : "",
+              "ORGANIZATIONID" : {
+                "ORGANIZATIONCODE" : "",
+                "DESCRIPTION" : "",
+                "entity" : "Store"
+              },
+              "DESCRIPTION" : ""
+            },
+            "BIN" : "",
+            "LOT" : "*"
+          },
+          "is_bylot" : null
+        },
+        "ManufacturerInfo" : {
+          "MANUFACTURERCODE" : "SWAGMANUFACTURER",
+          "SERIALNUMBER" : "98765",
+          "MODEL" : "12",
+          "MODELREVISION" : "8",
+          "XCOORDINATE" : {
+            "VALUE" : 122000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "YCOORDINATE" : {
+            "VALUE" : 89000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "ZCOORDINATE" : {
+            "VALUE" : 78000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          }
+        },
+        "FleetVehicleInfo" : {
+          "ISVEHICLE" : "true",
+          "FLEETCUSTOMERID" : null,
+          "FLEETBILLINGID" : null,
+          "FLEETMARKUPID" : null,
+          "VEHICLESTATUS" : null,
+          "VEHICLETYPE" : {
+            "TYPECODE" : "*",
+            "DESCRIPTION" : null,
+            "entity" : null
+          },
+          "ISSUETO" : null,
+          "ISRENTAL" : "false",
+          "RENTALTEMPLATEID" : null,
+          "ISCONTRACT" : "false",
+          "CONTRACTTEMPLATEID" : {
+            "CONTRACTTEMPLATECODE" : "SWAGTEMP",
+            "ORGANIZATIONID" : {
+              "ORGANIZATIONCODE" : "*",
+              "DESCRIPTION" : null,
+              "entity" : null
+            },
+            "DESCRIPTION" : null
+          },
+          "CUSTOMERID" : {
+            "CUSTOMERCODE" : "SWAGCUST",
+            "ORGANIZATIONID" : {
+              "ORGANIZATIONCODE" : "*",
+              "DESCRIPTION" : null,
+              "entity" : null
+            },
+            "DESCRIPTION" : null
+          },
+          "AVAILABILITYSTATUS" : {
+            "STATUSCODE" : "A",
+            "DESCRIPTION" : null,
+            "entity" : null
+          }
+        },
+        "CNID" : {
+          "CNNUMBER" : "SWAGCHANGE",
+          "DESCRIPTION" : "SWAGCHANGE"
+        },
+        "EQUIPMENTSTATEID" : {
+          "STATECODE" : "CNPE",
+          "DESCRIPTION" : "CN pending"
+        },
+        "VMRSCODE" : {
+          "SYSTEMLEVELID" : null,
+          "VMRSASSEMBLYID" : null,
+          "VMRSCOMPNENTID" : {
+            "SYSTEMLEVELCODE" : "S1",
+            "ASSEMBLYLEVELCODE" : "A1",
+            "COMPONENTLEVELID" : {
+              "COMPONENTLEVELCODE" : "C1",
+              "DESCRIPTION" : "SWAGS"
+            }
+          }
+        },
+        "PARTLOCATIONCODE" : null,
+        "PurchaseOrderInfo" : null,
+        "Variables" : {
+          "VARIABLE1" : "1",
+          "VARIABLE2" : "2",
+          "VARIABLE3" : "3",
+          "VARIABLE4" : "4",
+          "VARIABLE5" : "5",
+          "VARIABLE6" : "6"
+        },
+        "PREVENTWOCOMPLETION" : "true",
+        "USERDEFINEDAREA" : {
+          "CUSTOMFIELD" : null,
+          "STATUSCODE" : null,
+          "customfieldlimitexceeded" : null
+        },
+        "GISOBJID" : null,
+        "GISPROFILE" : null,
+        "CGMP" : "false",
+        "LINKGISWO" : "false",
+        "GISMAPID" : null,
+        "GISLAYER" : null,
+        "XLOCATION" : null,
+        "YLOCATION" : null,
+        "LINEARREFERENCEDETAILS" : {
+          "EQUIPMENTLENGTH" : {
+            "VALUE" : 134000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "EQUIPMENTLENGTHUOM" : "FEET",
+          "LINEARREFUOM" : "FEET",
+          "LINEARREFPRECISION" : 0,
+          "GEOGRAPHICALREFERENCE" : "Near",
+          "INSPECTIONDIRECTIONCODE" : "INDI",
+          "FLOWCODE" : "PRFL",
+          "LINEARCOSTWEIGHT" : null,
+          "LRFFROMPOINT" : {
+            "VALUE" : 0,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "LRFTOPOINT" : {
+            "VALUE" : 134000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "LINEARDIRECTIONID" : null,
+          "LINEAREQUIPMENTTYPE" : null
+        },
+        "CallCenterDetails" : {
+          "PENALTYFACTOR" : {
+            "VALUE" : 900,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "PENALTYAMOUNT" : {
+            "VALUE" : 100000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "CURRENCY" : "USD",
+            "DRCR" : "D",
+            "qualifier" : "OTHER",
+            "type" : null,
+            "index" : null
+          },
+          "ORGCURRENCY" : {
+            "CURRENCYCODE" : "USD",
+            "DESCRIPTION" : "US Dollar"
+          },
+          "CALENDARGROUPID" : null,
+          "SDMFLAG" : "false",
+          "ENABLESDMCHECK" : "false"
+        },
+        "AssetParentHierarchy" : null,
+        "UserDefinedFields" : {
+          "UDFCHAR01" : "1",
+          "UDFCHAR02" : "2",
+          "UDFCHAR03" : "2",
+          "UDFCHAR04" : "4",
+          "UDFCHAR05" : "1",
+          "UDFCHAR06" : null,
+          "UDFCHAR07" : null,
+          "UDFCHAR08" : null,
+          "UDFCHAR09" : null,
+          "UDFCHAR10" : null,
+          "UDFCHAR11" : null,
+          "UDFCHAR12" : null,
+          "UDFCHAR13" : null,
+          "UDFCHAR14" : null,
+          "UDFCHAR15" : null,
+          "UDFCHAR16" : null,
+          "UDFCHAR17" : null,
+          "UDFCHAR18" : null,
+          "UDFCHAR19" : null,
+          "UDFCHAR20" : null,
+          "UDFCHAR21" : null,
+          "UDFCHAR22" : null,
+          "UDFCHAR23" : null,
+          "UDFCHAR24" : null,
+          "UDFCHAR25" : null,
+          "UDFCHAR26" : null,
+          "UDFCHAR27" : null,
+          "UDFCHAR28" : null,
+          "UDFCHAR29" : null,
+          "UDFCHAR30" : null,
+          "UDFCHAR31" : null,
+          "UDFCHAR32" : null,
+          "UDFCHAR33" : null,
+          "UDFCHAR34" : null,
+          "UDFCHAR35" : null,
+          "UDFCHAR36" : null,
+          "UDFCHAR37" : null,
+          "UDFCHAR38" : null,
+          "UDFCHAR39" : null,
+          "UDFCHAR40" : null,
+          "UDFCHAR41" : null,
+          "UDFCHAR42" : null,
+          "UDFCHAR43" : null,
+          "UDFCHAR44" : null,
+          "UDFCHAR45" : null,
+          "UDFCHAR46" : null,
+          "UDFCHAR47" : null,
+          "UDFCHAR48" : null,
+          "UDFCHAR49" : null,
+          "UDFCHAR50" : null,
+          "UDFCHAR51" : null,
+          "UDFCHAR52" : null,
+          "UDFCHAR53" : null,
+          "UDFCHAR54" : null,
+          "UDFCHAR55" : null,
+          "UDFNUM01" : {
+            "VALUE" : 1000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "UDFNUM02" : {
+            "VALUE" : 3000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "UDFNUM03" : {
+            "VALUE" : 3000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "UDFNUM04" : {
+            "VALUE" : 9000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "UDFNUM05" : {
+            "VALUE" : 5000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "UDFNUM06" : null,
+          "UDFNUM07" : null,
+          "UDFNUM08" : null,
+          "UDFNUM09" : null,
+          "UDFNUM10" : null,
+          "UDFDATE01" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "UDFDATE02" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "UDFDATE03" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "UDFDATE04" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "UDFDATE05" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "UDFDATE06" : null,
+          "UDFDATE07" : null,
+          "UDFDATE08" : null,
+          "UDFDATE09" : null,
+          "UDFDATE10" : null,
+          "UDFCHKBOX01" : "true",
+          "UDFCHKBOX02" : "true",
+          "UDFCHKBOX03" : "true",
+          "UDFCHKBOX04" : "true",
+          "UDFCHKBOX05" : "true",
+          "UDFCHKBOX06" : "false",
+          "UDFCHKBOX07" : "false",
+          "UDFCHKBOX08" : "false",
+          "UDFCHKBOX09" : "false",
+          "UDFCHKBOX10" : "false",
+          "UDFNOTE01" : null,
+          "UDFNOTE02" : null
+        },
+        "FacilityConditionIndex" : {
+          "COSTOFNEEDEDREPAIRS" : {
+            "VALUE" : 20000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "CURRENCY" : "USD",
+            "DRCR" : "D",
+            "qualifier" : "OTHER",
+            "type" : null,
+            "index" : null
+          },
+          "REPLACEMENTVALUE" : {
+            "VALUE" : 10000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "CURRENCY" : "USD",
+            "DRCR" : "D",
+            "qualifier" : "OTHER",
+            "type" : null,
+            "index" : null
+          },
+          "FACILITYCONDITIONINDEX" : {
+            "VALUE" : 9000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "CURRENCY" : "USD",
+            "DRCR" : "D",
+            "qualifier" : "OTHER",
+            "type" : null,
+            "index" : null
+          },
+          "UTILITYBILLLEVEL" : "true",
+          "GASTRACKED" : "true",
+          "FLOORAREA" : {
+            "VALUE" : 100000000000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "FLOORAREAUOM" : {
+            "UOMCODE" : "EA",
+            "DESCRIPTION" : null
+          },
+          "ESTIMATEDREVENUE" : {
+            "VALUE" : 1000000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "CURRENCY" : "USD",
+            "DRCR" : "D",
+            "qualifier" : "OTHER",
+            "type" : null,
+            "index" : null
+          },
+          "REGION" : null,
+          "REGIONID" : {
+            "REGIONCODE" : "SWAGREGION",
+            "ORGANIZATIONID" : {
+              "ORGANIZATIONCODE" : "*",
+              "DESCRIPTION" : null,
+              "entity" : null
+            },
+            "DESCRIPTION" : null
+          },
+          "PRIMARYUSE" : {
+            "TYPECODE" : "*",
+            "DESCRIPTION" : null,
+            "entity" : null
+          },
+          "YEARBUILT" : {
+            "VALUE" : 2020,
+            "NUMOFDEC" : 0,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "SERVICELIFE" : {
+            "VALUE" : 20,
+            "NUMOFDEC" : 0,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "ENERGYSTARELIGIBLE" : null,
+          "ISFACILITY" : "false",
+          "COUNTRYID" : null
+        },
+        "RESOURCEENABLED" : "false",
+        "RELIABILITYRANKINGDETAILS" : {
+          "RELIABILITYRANKINGLOCKED" : "false",
+          "RELIABILITYRANKINGINDEXCODE" : null,
+          "RELIABILITYRANKINGID" : {
+            "RELIABILITYRANKINGCODE" : "SWAGERANK",
+            "RELIABILITYRANKINGREVISION" : 0,
+            "ORGANIZATIONID" : {
+              "ORGANIZATIONCODE" : "*",
+              "DESCRIPTION" : null,
+              "entity" : null
+            },
+            "DESCRIPTION" : null
+          },
+          "RELIABILITYRANKINGSCORE" : null,
+          "OUTOFSYNC" : "true",
+          "SETUPLASTUPDATEDDATE" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 10,
+            "MINUTE" : 25,
+            "SECOND" : 28,
+            "SUBSECOND" : 610,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "SURVEYLASTUPDATEDDATE" : null,
+          "VALUESLASTCALCULATEDDATE" : null
+        },
+        "EQUIPMENTALIAS" : "Asset1",
+        "EnergyPerformance" : {
+          "TARGETPOWERFACTOR" : {
+            "VALUE" : 120,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "TARGETPEAKDEMAND" : {
+            "VALUE" : 12000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "BILLINGPERIODSTARTDATE" : {
+            "YEAR" : 1704047400000,
+            "MONTH" : 7,
+            "DAY" : 26,
+            "HOUR" : 0,
+            "MINUTE" : 0,
+            "SECOND" : 0,
+            "SUBSECOND" : 0,
+            "TIMEZONE" : "+0530",
+            "qualifier" : "OTHER"
+          },
+          "BILLEVERYPERIOD" : {
+            "VALUE" : 12,
+            "NUMOFDEC" : 0,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "BILLEVERYUOM" : {
+            "PERIODUOMCODE" : "D",
+            "DESCRIPTION" : null
+          },
+          "PHASEIMBALANCEEFFICIENCYLOSS1" : {
+            "VALUE" : 120,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "PHASEIMBALANCEEFFICIENCYLOSS2" : {
+            "VALUE" : 120,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "PHASEIMBALANCEEFFICIENCYLOSS3" : {
+            "VALUE" : 120,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "PHASEIMBALANCEEFFICIENCYLOSS4" : {
+            "VALUE" : 120,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "PHASEIMBALANCEEFFICIENCYLOSS5" : {
+            "VALUE" : 120,
+            "NUMOFDEC" : 1,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "PERFORMANCEMANAGER" : {
+            "PERSONCODE" : "EMP1",
+            "DESCRIPTION" : null
+          },
+          "ELECTRICSUBMETERINTERVAL" : {
+            "VALUE" : 12,
+            "NUMOFDEC" : 0,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          },
+          "ELECTRICUSAGETHRESHOLD" : {
+            "VALUE" : 12000000,
+            "NUMOFDEC" : 6,
+            "SIGN" : "+",
+            "UOM" : "default",
+            "qualifier" : "OTHER"
+          }
+        },
+        "SAFETYDATEREVIEWREQUIRED" : null,
+        "SAFETYREVIEWEDBY" : null,
+        "PERMITDATEREVIEWREQUIRED" : null,
+        "PERMITREVIEWEDBY" : null,
+        "LOTODATEREVIEWREQUIRED" : null,
+        "LOTOREVIEWEDBY" : null,
+        "EQUIPMENTCONFIGURATIONID" : null,
+        "RCMLEVELID" : null,
+        "RISKMATRIXSETUPID" : null,
+        "RISKPRIORITYNUMBER" : null,
+        "ORIGINALRECEIPTDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "LATESTRECEIPTDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "ORIGINALINSTALLDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "LATESTINSTALLDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "DOCUMOTOBOOKID" : "123456",
+        "RESERVATIONCALENDAROWNER" : null,
+        "RESERVATIONCALENDAROWNERSLIST" : {
+          "APPROVALLISTCODE" : "SWAGAPP",
+          "DESCRIPTION" : null,
+          "ORGANIZATIONID" : null
+        },
+        "WORKSPACEID" : null,
+        "SETID" : null,
+        "SETPOSITION" : null,
+        "CONSISTID" : null,
+        "CONSISTPOSITION" : null,
+        "URL" : "hjkml",
+        "CONDITIONINDEX" : null,
+        "CONDITIONSCORE" : null,
+        "PROCESSERROR" : "false",
+        "LINEARUOMID" : {
+          "LINEARREFUOM" : "FEET",
+          "DESCRIPTION" : "Feet"
+        },
+        "EQUIPMENTLENGTHOVERRIDE" : "false",
+        "TEMPMONITORED" : "false",
+        "DRIVER" : {
+          "EMPLOYEECODE" : "EMP1",
+          "DESCRIPTION" : null,
+          "ORGANIZATIONID" : null
+        },
+        "PHONENUMBER" : "7995705871",
+        "ACCESSIBLE" : "true",
+        "NONSMOKING" : "true",
+        "HARDWAREVER" : "89",
+        "SOFTWAREVER" : "98",
+        "PURCHASINGASSET" : "789",
+        "BIOMEDICALASSET" : "879",
+        "UMDNS" : {
+          "TYPECODE" : "*",
+          "DESCRIPTION" : null,
+          "entity" : null
+        },
+        "OEMSITE" : "989",
+        "VENDOR" : "90",
+        "COVERAGETYPE" : {
+          "TYPECODE" : "*",
+          "DESCRIPTION" : null,
+          "entity" : null
+        },
+        "LOCKOUT" : "true",
+        "PERSONALPROTECTIVEEQUIP" : "true",
+        "CONFINEDSPACE" : "true",
+        "STATEMENTOFCOND" : "true",
+        "BUILDMAINTPROGRAM" : "true",
+        "HIPAACONFIDENTIALITY" : "true",
+        "OWNERSHIPTYPE" : {
+          "TYPECODE" : "OWN",
+          "DESCRIPTION" : null,
+          "entity" : null
+        },
+        "PURCHASEORDERCODE" : "89",
+        "PURCHASEDATE" : {
+          "YEAR" : 1704047400000,
+          "MONTH" : 7,
+          "DAY" : 26,
+          "HOUR" : 0,
+          "MINUTE" : 0,
+          "SECOND" : 0,
+          "SUBSECOND" : 0,
+          "TIMEZONE" : "+0530",
+          "qualifier" : "OTHER"
+        },
+        "PURCHASECOST" : {
+          "VALUE" : 98000000,
+          "NUMOFDEC" : 6,
+          "SIGN" : "+",
+          "CURRENCY" : "USD",
+          "DRCR" : "D",
+          "qualifier" : "OTHER",
+          "type" : null,
+          "index" : null
+        },
+        "PURCHASECURRENCY" : null,
+        "DISPOSALTYPE" : {
+          "TYPECODE" : "DONA",
+          "DESCRIPTION" : null,
+          "entity" : null
+        },
+        "CHECKLISTFILTER" : null,
+        "TOLERANCESIZE" : {
+          "VALUE" : 90000000,
+          "NUMOFDEC" : 6,
+          "SIGN" : "+",
+          "UOM" : "default",
+          "qualifier" : "OTHER"
+        },
+        "FUELID" : {
+          "FUELCODE" : "SWAGFUEL",
+          "DESCRIPTION" : null
+        },
+        "RISKPRIORITYCODE" : null,
+        "CRITICALITYSCORE" : null,
+        "CORRECTIONCONDITIONSCORE" : null,
+        "CORRECTIONCONDITIONREASON" : null,
+        "CORRECTIONCONDITIONDATE" : null,
+        "CORRECTIONUSAGE" : null,
+        "CORRECTIONUSAGEUOM" : {
+          "UOMCODE" : "EA",
+          "DESCRIPTION" : "EA"
+        },
+        "ENDUSEFULLIFE" : null,
+        "REMAININGUSEFULLIFE" : null,
+        "SERVICELIFEUSAGE" : {
+          "VALUE" : 91000000,
+          "NUMOFDEC" : 6,
+          "SIGN" : "+",
+          "UOM" : "default",
+          "qualifier" : "OTHER"
+        },
+        "SERVICELIFEUSAGEUOM" : {
+          "UOMCODE" : "EA",
+          "DESCRIPTION" : "EA"
+        },
+        "PROFILEPICTURE" : null,
+        "PERFORMANCEDETAILS" : {
+          "PERFORMANCEFORMULAID" : null,
+          "PERFORMANCE" : null,
+          "CONDITIONRATINGWEIGHT" : null,
+          "CAPACITYCODE" : null,
+          "AVAILABLECAPACITY" : null,
+          "LASTUPDATEDDATE" : null,
+          "DESIREDCAPACITY" : null,
+          "CAPACITYRATINGWEIGHT" : null,
+          "NOOFFAILURES" : null,
+          "MTBFDAYS" : null,
+          "MTBFRATINGWEIGHT" : null,
+          "MUBF" : null,
+          "MUBFUOM" : {
+            "UOMCODE" : "EA",
+            "DESCRIPTION" : null
+          },
+          "MUBFRATING" : null,
+          "MTTRHRS" : null,
+          "MTTRRATING" : null,
+          "VARIABLE1RESULT" : null,
+          "VARIABLE2RESULT" : null,
+          "VARIABLE3RESULT" : null,
+          "VARIABLE4RESULT" : null,
+          "VARIABLE5RESULT" : null,
+          "VARIABLE6RESULT" : null,
+          "VARIABLE1RATING" : null,
+          "VARIABLE2RATING" : null,
+          "VARIABLE3RATING" : null,
+          "VARIABLE4RATING" : null,
+          "VARIABLE5RATING" : null,
+          "VARIABLE6RATING" : null
+        },
+        "RISKCONSEQUENCECOST" : null,
+        "FAILUREPROBPERCENTAGE" : null,
+        "BLACKSWAN" : "false",
+        "BLACKSWANCOST" : null,
+        "CURRENCYCODE" : "USD",
+        "PIDNUMBER" : null,
+        "PIDDRAWING" : null,
+        "UNMITIGATEDRISKLEVELID" : null,
+        "UNMITIGATEDRISKPRIORITYNUMBER" : null,
+        "TAGINFOMAPSERVERURL" : null,
+        "WorkflowSummaryInfo" : null,
+        "recordid" : 0,
+        "user_entity" : null,
+        "system_entity" : null,
+        "autonumber" : "default",
+        "creategis" : "true",
+        "has_department_security" : "false",
+        "has_readonly_department_security_for_createwo" : "false",
+        "is_gis_webservice_request" : "false",
+        "is_associated_to_current_consist" : "false",
+        "is_default_rankings_available" : "false",
+        "instructure" : "false",
+        "haswo" : "false",
+        "confirm_delete_surveryanswers" : "confirmed",
+        "confirm_delete_qualifications" : "confirmed",
+        "confirmaddlinearreferences" : null,
+        "confirm_availability_status" : null,
+        "confirmnewequipmentlength" : null
+      }
+    },
+    "example3" : {
+      "summary" : "An example for patch. This is for patch only not for post and put.",
+      "value" : {
+        "ASSETID" : {
+          "DESCRIPTION" : "Test Asset 1"
+        }
+      }
+    },
+    "example4" : {
+      "summary" : "All available fields"
+    }
+  }
+,    "requestBodies": {
+      "AssetEquipment": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AssetEquipment"
+             }
+           }
+        },
+        "required": true
+      },
+      "AssetEquipmentDefault": {
+        "content": {
+           "application/json": {
+              "schema": {
+                  "$ref": "#/components/schemas/GetAssetEquipmentDefault"
+              }
+           }
+        },
+        "required": true
+      },
+      "TransferEquipment": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TransferEquipment"
+             }
+           }
+        },
+        "required": true
+      },
+      "ChangeEquipmentNumber": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ChangeEquipmentNumber"
+             }
+           }
+        },
+        "required": true
+      }    },
+    "securitySchemes": {
+      "basicAuth": {
+         "type": "http",
+         "scheme": "basic"
+      },
+      "apiKey": {
+         "type": "apiKey",
+         "in": "header",
+         "name": "X-API-Key"
+      },
+      "bearerAuth": {
+         "type": "http",
+         "scheme": "bearer",
+         "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": [] 
+    },
+    {
+      "apiKey": [] 
+    },
+    {
+      "bearerAuth": [] 
+    }
+  ]
+}

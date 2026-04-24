@@ -1,0 +1,13 @@
+{
+  "name": "eam-proxy",
+  "version": "1.0.0",
+  "description": "Proxy server for EAM API to avoid CORS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  }
+}

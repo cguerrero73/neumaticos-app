@@ -12,6 +12,7 @@ export interface TirePosition {
   id: string;
   code: string | null;
   position: string;
+  positionNumber: number; // número secuencial 1 a n por vehículo
   hasTire: boolean;
   pressure?: number;
   depth?: number;
@@ -34,6 +35,7 @@ export interface WheelPosition {
   side: 'L' | 'R';
   innerIndex: number;
   position: string;
+  positionNumber?: number; // se asigna después en generateTirePositions
   x: number;
   y: number;
 }

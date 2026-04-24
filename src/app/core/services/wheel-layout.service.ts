@@ -38,6 +38,7 @@ export class WheelLayoutService {
     const axles: AxleDefinition[] = [];
     let globalAxleIndex = 0;
     let currentY = options.startY;
+    let positionCounter = 1;
 
     parsed.forEach((group) => {
       for (let i = 0; i < group.count; i++) {
@@ -48,7 +49,11 @@ export class WheelLayoutService {
           globalAxleIndex,
           options,
           currentY,
+          positionCounter,
         );
+
+        // Actualizar contador según cantidad de ruedas en este eje
+        positionCounter += positions.length;
 
         axles.push({
           type: group.type,
@@ -56,9 +61,7 @@ export class WheelLayoutService {
           positions,
         });
 
-        // Siempre agregar espacio extra DESPUÉS del último eje del grupo
         currentY += isLastOfGroup ? options.diffGroupSpacing : options.sameGroupSpacing;
-
         globalAxleIndex++;
       }
     });
@@ -74,10 +77,9 @@ export class WheelLayoutService {
     axleIndex: number,
     options: LayoutOptions,
     y: number,
+    positionCounter: number,
   ): AxleDefinition['positions'] {
     const { leftEdge, rightEdge, wheelSpacing } = options;
-
-    // const y = startY + axleIndex * sameGroupSpacing;
 
     const positions: AxleDefinition['positions'] = [];
 
@@ -87,6 +89,7 @@ export class WheelLayoutService {
         side: 'L',
         innerIndex: 0,
         position: `Eje ${axleIndex + 1} Izq`,
+        positionNumber: positionCounter++,
         x: leftEdge,
         y,
       });
@@ -94,6 +97,7 @@ export class WheelLayoutService {
         side: 'R',
         innerIndex: 0,
         position: `Eje ${axleIndex + 1} Der`,
+        positionNumber: positionCounter++,
         x: rightEdge,
         y,
       });
@@ -103,6 +107,7 @@ export class WheelLayoutService {
         side: 'L',
         innerIndex: 0,
         position: `Eje ${axleIndex + 1} Izq 1`,
+        positionNumber: positionCounter++,
         x: leftEdge,
         y,
       });
@@ -110,6 +115,7 @@ export class WheelLayoutService {
         side: 'L',
         innerIndex: 1,
         position: `Eje ${axleIndex + 1} Izq 2`,
+        positionNumber: positionCounter++,
         x: leftEdge + wheelSpacing,
         y,
       });
@@ -117,6 +123,7 @@ export class WheelLayoutService {
         side: 'R',
         innerIndex: 0,
         position: `Eje ${axleIndex + 1} Der 1`,
+        positionNumber: positionCounter++,
         x: rightEdge - wheelSpacing,
         y,
       });
@@ -124,6 +131,7 @@ export class WheelLayoutService {
         side: 'R',
         innerIndex: 1,
         position: `Eje ${axleIndex + 1} Der 2`,
+        positionNumber: positionCounter++,
         x: rightEdge,
         y,
       });
@@ -134,6 +142,7 @@ export class WheelLayoutService {
 
   /**
    * Genera posiciones de neumáticos desde axles
+   * Cada posición tiene un número secuencial 1 a n por vehículo
    */
   generateTirePositions(axles: AxleDefinition[]): TirePosition[] {
     if (axles.length === 0) return [];
@@ -147,6 +156,7 @@ export class WheelLayoutService {
           id: String(tireIdCounter++),
           code: `PY-${7800 + tireIdCounter}`,
           position: pos.position,
+          positionNumber: pos.positionNumber || 1,
           hasTire: true,
           pressure: 32,
           depth: 8.5,
