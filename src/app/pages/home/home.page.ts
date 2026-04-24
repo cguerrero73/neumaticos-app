@@ -45,6 +45,7 @@ export class HomePage implements OnInit {
 
   // State
   manualCode = '';
+  manualOrg = '';
   vehicle = signal<VehicleWithTires | null>(null);
   selectedPosition = signal<TirePosition | null>(null);
   assetInfo = signal<AssetInfo | null>(null);
@@ -64,6 +65,15 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.loadInventory();
+    // Cargar organización guardada
+    this.manualOrg = localStorage.getItem('eam_org') || '';
+  }
+
+  // Guardar organización cuando cambia
+  saveOrg() {
+    if (this.manualOrg) {
+      localStorage.setItem('eam_org', this.manualOrg);
+    }
   }
 
   // Delegar cálculo de ejes al servicio
@@ -544,8 +554,15 @@ export class HomePage implements OnInit {
     // Intentar buscar en EAM si está configurado
     if (eamConfigService.isConfigured()) {
       try {
-        // Buscar asset en EAM por código
-        const asset = await assetApiService.getAsset(code);
+        // Guardar organización
+        this.saveOrg();
+
+        // Concatenar código + # + organización
+        const org = this.manualOrg.trim().toUpperCase();
+        const searchCode = org ? `${code}#${org}` : code;
+
+        // Buscar asset en EAM por código (URL encoded)
+        const asset = await assetApiService.getAsset(encodeURIComponent(searchCode));
 
         if (asset) {
           // El asset existe en EAM - cargarlo

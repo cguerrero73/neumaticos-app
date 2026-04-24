@@ -35,8 +35,15 @@
       <div class="manual-input">
         <input
           type="text"
-          placeholder="O ingresá el código manualmente"
+          placeholder="Código del equipo"
           [(ngModel)]="manualCode"
+          (keyup.enter)="loadVehicle()"
+        />
+        <input
+          type="text"
+          placeholder="Organización"
+          [(ngModel)]="manualOrg"
+          (blur)="saveOrg()"
           (keyup.enter)="loadVehicle()"
         />
         <button (click)="loadVehicle()">Buscar</button>
