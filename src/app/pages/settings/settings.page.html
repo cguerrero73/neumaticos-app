@@ -1,0 +1,112 @@
+<div class="settings-page">
+  <div class="header">
+    <h1>Configuración EAM</h1>
+    <p>Conectá con tu sistema Hexagon EAM</p>
+  </div>
+
+  <div class="settings-form">
+    <div class="form-group">
+      <label for="eamBaseUrl">URL del Servidor EAM</label>
+      <input
+        type="url"
+        id="eamBaseUrl"
+        [(ngModel)]="config.eamBaseUrl"
+        placeholder="https://us1.eam.hxgnsmartcloud.com/axis/restservices"
+      />
+      <span class="hint">URL base del servidor Hexagon EAM</span>
+    </div>
+
+    <div class="form-group">
+      <label for="apiKey">API Key</label>
+      <input type="password" id="apiKey" [(ngModel)]="config.apiKey" placeholder="Tu API Key" />
+      <span class="hint">API Key proporcionada por Hexagon</span>
+    </div>
+
+    <div class="form-group">
+      <label for="tenant">Tenant</label>
+      <input type="text" id="tenant" [(ngModel)]="config.tenant" placeholder="Nombre del tenant" />
+    </div>
+
+    <div class="form-group">
+      <label for="organization">Organization</label>
+      <input
+        type="text"
+        id="organization"
+        [(ngModel)]="config.organization"
+        placeholder="Nombre de la organización"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="wheelConfigField">Campo de Config. de Ruedas</label>
+      <input
+        type="text"
+        id="wheelConfigField"
+        [(ngModel)]="config.wheelConfigField"
+        placeholder="Código del campo (ej: WHEELCONF)"
+      />
+      <span class="hint">Custom field que indica la configuración del vehículo</span>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-test" (click)="testConnection()" [disabled]="testing()">
+        @if (testing()) {
+          <span class="spinner"></span> Probando...
+        } @else {
+          Probar conexión
+        }
+      </button>
+
+      <button class="btn-save" (click)="save()" [disabled]="saving()">
+        @if (saving()) {
+          Guardando...
+        } @else {
+          Guardar
+        }
+      </button>
+    </div>
+
+    @if (testResult) {
+      <div
+        class="test-result"
+        [class.success]="testResult.success"
+        [class.error]="!testResult.success"
+      >
+        {{ testResult.message }}
+      </div>
+    }
+
+    @if (saveResult) {
+      <div class="save-result" [class.success]="saveResult.success">
+        {{ saveResult.message }}
+      </div>
+    }
+  </div>
+
+  <div class="info-section">
+    <h3>¿No tenés los datos?</h3>
+    <p>Contactá a tu administrador de Hexagon EAM para obtener las credenciales de API.</p>
+  </div>
+
+  @if (currentConfig()) {
+    <div class="current-config">
+      <h3>Configuración actual</h3>
+      <div class="config-item">
+        <span class="label">URL:</span>
+        <span class="value">{{ maskUrl(currentConfig()?.eamBaseUrl || '') }}</span>
+      </div>
+      <div class="config-item">
+        <span class="label">API Key:</span>
+        <span class="value">{{ maskValue(currentConfig()?.apiKey || '') }}</span>
+      </div>
+      <div class="config-item">
+        <span class="label">Tenant:</span>
+        <span class="value">{{ currentConfig()?.tenant || '-' }}</span>
+      </div>
+      <div class="config-item">
+        <span class="label">Organization:</span>
+        <span class="value">{{ currentConfig()?.organization || '-' }}</span>
+      </div>
+    </div>
+  }
+</div>

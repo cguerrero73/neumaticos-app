@@ -2,8 +2,13 @@
 <div class="scanner-page">
   <!-- Header visible siempre -->
   <div class="header">
-    <h1>Gestión de Neumáticos</h1>
-    <p>Escaneá el vehículo para comenzar</p>
+    <div class="header-top">
+      <div>
+        <h1>Gestión de Neumáticos</h1>
+        <p>Escaneá el vehículo para comenzar</p>
+      </div>
+      <a routerLink="/settings" class="settings-btn">Settings</a>
+    </div>
   </div>
 
   @if (!vehicle()) {
@@ -107,9 +112,13 @@
         <div class="vehicle-header">
           <button class="back-btn" (click)="clearVehicle()">← Volver</button>
           <div class="vehicle-info">
-            <h2>{{ vehicle()!.plate }}</h2>
+            <h2>{{ assetInfo()?.EQUIPMENTCODE || vehicle()!.plate }}</h2>
             <p class="config-badge">{{ vehicle()!.wheelConfig }}</p>
             <p>{{ vehicle()!.type }}</p>
+            @if (assetInfo()) {
+              <p class="asset-detail">{{ assetInfo()?.DESCRIPTION }}</p>
+              <p class="asset-status">{{ assetInfo()?.STATUSDESCRIPTION }}</p>
+            }
           </div>
         </div>
 
@@ -135,6 +144,15 @@
                     (dragleave)="onWheelDragLeave($event)"
                     (drop)="onWheelDrop($event, pos.position)"
                   >
+                    <!-- Número de posición (izq si impar, der si par) -->
+                    <text
+                      [attr.x]="(pos.positionNumber || 1) % 2 === 1 ? pos.x - 30 : pos.x + 12"
+                      [attr.y]="pos.y + 9"
+                      class="position-number"
+                    >
+                      {{ pos.positionNumber }}
+                    </text>
+
                     <image
                       href="/wheel.svg"
                       [attr.x]="pos.x - 18"

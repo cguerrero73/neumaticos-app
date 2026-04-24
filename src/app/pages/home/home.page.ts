@@ -1,12 +1,21 @@
 import { Component, signal, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { PlatformService } from '../../core/services/platform.service';
 import { wheelLayoutService } from '../../core/services/wheel-layout.service';
 import { tireInventoryService } from '../../core/services/tire-inventory.service';
+import {
+  assetApiService,
+  AssetEquipment,
+  mapAssetToInfo,
+  AssetInfo,
+  getAssetField,
+} from '../../core/services/asset-api.service';
 import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/models/vehicle.model';
 import { TireInventoryItem, TireStatus } from '../../core/models/tire-inventory.model';
+import { eamConfigService } from '../../core/config/eam-config.service';
 
 interface TireFilters {
   measure?: string;
@@ -26,7 +35,7 @@ interface PendingMovement {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
 })
@@ -38,6 +47,7 @@ export class HomePage implements OnInit {
   manualCode = '';
   vehicle = signal<VehicleWithTires | null>(null);
   selectedPosition = signal<TirePosition | null>(null);
+  assetInfo = signal<AssetInfo | null>(null);
 
   // Inventory
   inventory = signal<TireInventoryItem[]>([]);
@@ -528,13 +538,38 @@ export class HomePage implements OnInit {
     this.loadVehicleWithConfig(code + ':S1');
   }
 
-  loadVehicleWithConfig(input: string) {
-    let code = input;
+  async loadVehicleWithConfig(input: string) {
+    let code = input.trim().toUpperCase();
+
+    // Intentar buscar en EAM si está configurado
+    if (eamConfigService.isConfigured()) {
+      try {
+        // Buscar asset en EAM por código
+        const asset = await assetApiService.getAsset(code);
+
+        if (asset) {
+          // El asset existe en EAM - cargarlo
+          this.loadFromEamAsset(asset);
+          this.manualCode = '';
+          return;
+        } else {
+          // No existe en EAM
+          this.showToast('Equipo no encontrado en EAM');
+          return;
+        }
+      } catch (e: any) {
+        console.error('Error consultando EAM:', e);
+        this.showToast(`Error al buscar: ${e.message || 'Intente más tarde'}`);
+        return;
+      }
+    }
+
+    // Fallback: generar mock local (si EAM no está configurado)
     let wheelConfig = 'S1';
 
     if (input.includes(':')) {
       const parts = input.split(':');
-      code = parts[0];
+      code = parts[0].toUpperCase();
       wheelConfig = parts[1] || 'S1';
     } else if (/^[SD]\d+(-[SD]\d+)*$/.test(input)) {
       wheelConfig = input;
@@ -556,8 +591,51 @@ export class HomePage implements OnInit {
 
     this.vehicle.set(mock);
     this.manualCode = '';
+    this.loadInventory();
+  }
 
-    // Resetear inventario al cargar nuevo vehículo
+  // Helper para mostrar toast
+  private showToast(message: string) {
+    // Usar alert por ahora (después podemos usar un toast service)
+    alert(message);
+  }
+
+  // Cargar vehículo desde asset de EAM
+  private loadFromEamAsset(asset: AssetEquipment) {
+    // Extraer código del asset - puede ser string o objeto { EQUIPMENTCODE: string }
+    const rawAssetId = asset.ASSETID;
+    const equipmentCode =
+      typeof rawAssetId === 'string'
+        ? rawAssetId
+        : (rawAssetId as any)?.EQUIPMENTCODE || asset.ASSETNUM || 'UNKNOWN';
+
+    // Extraer tipo - puede ser string o objeto { DESCRIPTION: string }
+    const rawType = asset.TYPE;
+    const typeDesc =
+      typeof rawType === 'string' ? rawType : (rawType as any)?.DESCRIPTION || 'Vehículo';
+
+    // Obtener wheel config del custom field configurado
+    const wheelConfigField = eamConfigService.config().wheelConfigField;
+    const wheelConfig = wheelConfigField ? getAssetField(asset, wheelConfigField) || 'S1' : 'S1';
+
+    const axles = wheelLayoutService.calculateAxles(wheelConfig);
+    const positions = wheelLayoutService.generateTirePositions(axles);
+
+    const vehicle: VehicleWithTires = {
+      id: equipmentCode,
+      code: equipmentCode,
+      type: typeDesc,
+      plate: equipmentCode,
+      wheelConfig,
+      positions,
+    };
+
+    // Extraer info formateada para UI
+    const info = mapAssetToInfo(asset);
+
+    this.vehicle.set(vehicle);
+    this.assetInfo.set(info);
+    this.manualCode = '';
     this.loadInventory();
   }
 

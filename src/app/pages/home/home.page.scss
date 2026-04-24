@@ -17,9 +17,14 @@
 
 .header {
   padding: 16px 20px;
-  text-align: center;
   border-bottom: 1px solid #2d3748;
   flex-shrink: 0;
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   h1 {
     color: white;
@@ -32,6 +37,20 @@
     color: #718096;
     margin: 0;
     font-size: 13px;
+  }
+}
+
+.settings-btn {
+  background: #2d3748;
+  color: #a0aec0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+
+  &:active {
+    background: #4a5568;
   }
 }
 
@@ -367,6 +386,22 @@
     font-weight: 700;
     margin-top: 6px;
   }
+
+  .asset-detail {
+    color: #a0aec0;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .asset-status {
+    display: inline-block;
+    background: #38a169;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-top: 4px;
+  }
 }
 
 .template-diagram {
@@ -423,6 +458,16 @@
 
 .wheel {
   cursor: pointer;
+
+  // Número de posición
+  .position-number {
+    fill: white;
+    font-size: 18px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 
   // Highlight when has tire
   &.has-tire image {
