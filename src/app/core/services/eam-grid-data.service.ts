@@ -17,8 +17,13 @@ export class EamGridDataService {
    * @param body - JSON tal cual lo envía EAM para el grid
    */
   async query(body: any): Promise<any> {
-    const url = '/griddata';
-    const headers = eamConfigService.getHeaders();
+    const url = '/eam/griddata';
+    const headers = {
+      ...eamConfigService.getHeaders(),
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    };
 
     const options: RequestInit = {
       method: 'POST',

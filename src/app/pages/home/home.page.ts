@@ -609,9 +609,11 @@ export class HomePage implements OnInit {
 
   // Cargar vehículo desde asset de EAM
   private loadFromEamAsset(asset: AssetEquipment) {
-    // El asset tiene directamente los campos: ASSETID, DESCRIPTION, ORG, STATUS, SETUP
-    const code = asset.ASSETID || 'UNKNOWN';
-    const wheelConfig = (asset.SETUP as string) || 'S1';
+    // El asset tiene estructura anidada: ASSETID.EQUIPMENTCODE, STATUS.DESCRIPTION, UserDefinedFields.UDFCHAR10
+    const code = asset.ASSETID?.EQUIPMENTCODE || 'UNKNOWN';
+    const description = asset.ASSETID?.DESCRIPTION || '';
+    const status = asset.STATUS?.DESCRIPTION || '';
+    const wheelConfig = (asset.UserDefinedFields?.UDFCHAR10 as string) || 'S1';
 
     const axles = wheelLayoutService.calculateAxles(wheelConfig);
     const positions = wheelLayoutService.generateTirePositions(axles);
@@ -619,7 +621,7 @@ export class HomePage implements OnInit {
     const vehicle: VehicleWithTires = {
       id: code,
       code: code,
-      type: asset.DESCRIPTION || 'Vehículo',
+      type: description,
       plate: code,
       wheelConfig,
       positions,
@@ -628,8 +630,8 @@ export class HomePage implements OnInit {
     // Info del asset para UI
     const info = {
       EQUIPMENTCODE: code,
-      DESCRIPTION: asset.DESCRIPTION || '',
-      STATUSDESCRIPTION: asset.STATUS || '',
+      DESCRIPTION: description,
+      STATUSDESCRIPTION: status,
       SETUPDESCRIPTION: wheelConfig,
     };
 

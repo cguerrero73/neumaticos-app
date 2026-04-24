@@ -387,10 +387,18 @@
     margin-top: 6px;
   }
 
-  .asset-detail {
-    color: #a0aec0;
-    font-size: 12px;
+  .asset-details {
     margin-top: 8px;
+
+    p {
+      color: #a0aec0;
+      font-size: 11px;
+      margin: 4px 0;
+
+      strong {
+        color: #718096;
+      }
+    }
   }
 
   .asset-status {
@@ -401,6 +409,12 @@
     border-radius: 4px;
     font-size: 11px;
     margin-top: 4px;
+  }
+
+  .asset-setup {
+    color: #718096;
+    font-size: 12px;
+    margin-top: 8px;
   }
 }
 

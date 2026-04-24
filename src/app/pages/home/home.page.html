@@ -119,12 +119,12 @@
         <div class="vehicle-header">
           <button class="back-btn" (click)="clearVehicle()">← Volver</button>
           <div class="vehicle-info">
-            <h2>{{ assetInfo()?.EQUIPMENTCODE || vehicle()!.plate }}</h2>
-            <p class="config-badge">{{ vehicle()!.wheelConfig }}</p>
-            <p>{{ vehicle()!.type }}</p>
             @if (assetInfo()) {
-              <p class="asset-detail">{{ assetInfo()?.DESCRIPTION }}</p>
+              <h2>
+                <strong>{{ assetInfo()?.EQUIPMENTCODE }}</strong> - {{ assetInfo()?.DESCRIPTION }}
+              </h2>
               <p class="asset-status">{{ assetInfo()?.STATUSDESCRIPTION }}</p>
+              <p class="asset-setup">Config: {{ assetInfo()?.SETUPDESCRIPTION }}</p>
             }
           </div>
         </div>
