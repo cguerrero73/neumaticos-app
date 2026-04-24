@@ -27,9 +27,25 @@ export interface AssetInfo {
 export class AssetApiService {
   /**
    * Obtiene un asset por ID usando griddata (ZUN001)
+   * @param code - código del asset (obj_code)
+   * @param org - organización (obj_org)
    */
-  async getAsset(id: string): Promise<AssetEquipment | null> {
+  async getAsset(code: string, org: string): Promise<AssetEquipment | null> {
     try {
+      const filters = [
+        { ALIAS_NAME: 'obj_code', OPERATOR: '=', VALUE: code, JOINER: 'AND', SEQNUM: 0 },
+      ];
+
+      if (org) {
+        filters.push({
+          ALIAS_NAME: 'obj_org',
+          OPERATOR: '=',
+          VALUE: org,
+          JOINER: 'AND',
+          SEQNUM: 1,
+        });
+      }
+
       const body = {
         GRID: {
           GRID_NAME: 'ZUN001',
@@ -37,9 +53,7 @@ export class AssetApiService {
           CURSOR_POSITION: 0,
         },
         MULTIADDON_FILTERS: {
-          MADDON_FILTER: [
-            { ALIAS_NAME: 'obj_code', OPERATOR: 'LIKE', VALUE: id, JOINER: 'AND', SEQNUM: 1 },
-          ],
+          MADDON_FILTER: filters,
         },
         GRID_TYPE: { TYPE: 'LIST' },
         REQUEST_TYPE: 'LIST.DATA_ONLY.STORED',

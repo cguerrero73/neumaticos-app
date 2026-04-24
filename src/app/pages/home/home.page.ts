@@ -6,13 +6,7 @@ import { RouterLink } from '@angular/router';
 import { PlatformService } from '../../core/services/platform.service';
 import { wheelLayoutService } from '../../core/services/wheel-layout.service';
 import { tireInventoryService } from '../../core/services/tire-inventory.service';
-import {
-  assetApiService,
-  AssetEquipment,
-  mapAssetToInfo,
-  AssetInfo,
-  getAssetField,
-} from '../../core/services/asset-api.service';
+import { assetApiService, AssetEquipment } from '../../core/services/asset-api.service';
 import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/models/vehicle.model';
 import { TireInventoryItem, TireStatus } from '../../core/models/tire-inventory.model';
 import { eamConfigService } from '../../core/config/eam-config.service';
@@ -48,7 +42,7 @@ export class HomePage implements OnInit {
   manualOrg = '';
   vehicle = signal<VehicleWithTires | null>(null);
   selectedPosition = signal<TirePosition | null>(null);
-  assetInfo = signal<AssetInfo | null>(null);
+  assetInfo = signal<any>(null);
 
   // Inventory
   inventory = signal<TireInventoryItem[]>([]);
@@ -557,12 +551,8 @@ export class HomePage implements OnInit {
         // Guardar organización
         this.saveOrg();
 
-        // Concatenar código + # + organización
         const org = this.manualOrg.trim().toUpperCase();
-        const searchCode = org ? `${code}#${org}` : code;
-
-        // Buscar asset en EAM por código (URL encoded)
-        const asset = await assetApiService.getAsset(encodeURIComponent(searchCode));
+        const asset = await assetApiService.getAsset(code, org);
 
         if (asset) {
           // El asset existe en EAM - cargarlo
@@ -619,39 +609,32 @@ export class HomePage implements OnInit {
 
   // Cargar vehículo desde asset de EAM
   private loadFromEamAsset(asset: AssetEquipment) {
-    // Extraer código del asset - puede ser string o objeto { EQUIPMENTCODE: string }
-    const rawAssetId = asset.ASSETID;
-    const equipmentCode =
-      typeof rawAssetId === 'string'
-        ? rawAssetId
-        : (rawAssetId as any)?.EQUIPMENTCODE || asset.ASSETNUM || 'UNKNOWN';
-
-    // Extraer tipo - puede ser string o objeto { DESCRIPTION: string }
-    const rawType = asset.TYPE;
-    const typeDesc =
-      typeof rawType === 'string' ? rawType : (rawType as any)?.DESCRIPTION || 'Vehículo';
-
-    // Obtener wheel config del custom field configurado
-    const wheelConfigField = eamConfigService.config().wheelConfigField;
-    const wheelConfig = wheelConfigField ? getAssetField(asset, wheelConfigField) || 'S1' : 'S1';
+    // El asset tiene directamente los campos: ASSETID, DESCRIPTION, ORG, STATUS, SETUP
+    const code = asset.ASSETID || 'UNKNOWN';
+    const wheelConfig = (asset.SETUP as string) || 'S1';
 
     const axles = wheelLayoutService.calculateAxles(wheelConfig);
     const positions = wheelLayoutService.generateTirePositions(axles);
 
     const vehicle: VehicleWithTires = {
-      id: equipmentCode,
-      code: equipmentCode,
-      type: typeDesc,
-      plate: equipmentCode,
+      id: code,
+      code: code,
+      type: asset.DESCRIPTION || 'Vehículo',
+      plate: code,
       wheelConfig,
       positions,
     };
 
-    // Extraer info formateada para UI
-    const info = mapAssetToInfo(asset);
+    // Info del asset para UI
+    const info = {
+      EQUIPMENTCODE: code,
+      DESCRIPTION: asset.DESCRIPTION || '',
+      STATUSDESCRIPTION: asset.STATUS || '',
+      SETUPDESCRIPTION: wheelConfig,
+    };
 
     this.vehicle.set(vehicle);
-    this.assetInfo.set(info);
+    this.assetInfo.set(info as any);
     this.manualCode = '';
     this.loadInventory();
   }

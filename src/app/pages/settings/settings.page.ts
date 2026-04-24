@@ -48,7 +48,7 @@ export class SettingsPage implements OnInit {
       eamConfigService.updateConfig(this.config);
 
       // Intentar obtener asset de prueba
-      const asset = await assetApiService.getAsset('TEST');
+      const asset = await assetApiService.getAsset('TEST', this.config.organization);
 
       this.testResult = {
         success: !!asset,
