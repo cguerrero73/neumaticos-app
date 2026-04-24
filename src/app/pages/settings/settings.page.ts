@@ -47,12 +47,12 @@ export class SettingsPage implements OnInit {
       // Guardar temporalmente para probar
       eamConfigService.updateConfig(this.config);
 
-      // Intentar obtener assets
-      const assets = await assetApiService.getAssets();
+      // Intentar obtener asset de prueba
+      const asset = await assetApiService.getAsset('TEST');
 
       this.testResult = {
-        success: true,
-        message: `Conexión exitosa! ${assets.length} assets encontrados.`,
+        success: !!asset,
+        message: asset ? `Conexión exitosa! Asset: ${asset.ASSETID}` : 'No se encontraron assets',
       };
     } catch (e: any) {
       this.testResult = {
