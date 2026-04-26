@@ -1,0 +1,8 @@
+<div class="toast-container">
+  @for (toast of errorService.notifications(); track trackById($index, toast)) {
+    <div class="toast toast-{{ toast.type }}">
+      <span class="toast-message">{{ toast.message }}</span>
+      <button class="toast-close" (click)="errorService.dismiss(toast.id)">×</button>
+    </div>
+  }
+</div>

@@ -1,8 +1,8 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EamConfig, eamConfigService } from '../../core/config/eam-config.service';
-import { assetApiService } from '../../core/services/asset-api.service';
+import { AssetApiService } from '../../core/services/asset-api.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,6 +10,7 @@ import { assetApiService } from '../../core/services/asset-api.service';
   imports: [FormsModule, CommonModule],
   templateUrl: './settings.page.html',
   styleUrl: './settings.page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsPage implements OnInit {
   // Configuración actual (copia para editar)
@@ -26,9 +27,16 @@ export class SettingsPage implements OnInit {
   saving = signal(false);
   currentConfig = signal<EamConfig | null>(null);
 
+  // API service
+  private readonly assetApi: AssetApiService;
+
   // Resultados
   testResult: { success: boolean; message: string } | null = null;
   saveResult: { success: boolean; message: string } | null = null;
+
+  constructor() {
+    this.assetApi = inject(AssetApiService);
+  }
 
   ngOnInit() {
     // Cargar config actual
@@ -48,7 +56,7 @@ export class SettingsPage implements OnInit {
       eamConfigService.updateConfig(this.config);
 
       // Intentar obtener asset de prueba
-      const asset = await assetApiService.getAsset('TEST', this.config.organization);
+      const asset = await this.assetApi.getAsset('TEST', this.config.organization).toPromise();
 
       this.testResult = {
         success: !!asset,

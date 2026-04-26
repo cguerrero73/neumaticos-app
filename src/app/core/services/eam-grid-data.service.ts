@@ -5,6 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { eamConfigService } from '../config/eam-config.service';
+import { errorService } from './error.service';
 
 export interface ParsedGridRow {
   [fieldName: string]: string | number | null;
@@ -31,13 +32,20 @@ export class EamGridDataService {
       body: JSON.stringify(body),
     };
 
-    const response = await fetch(url, options);
+    try {
+      const response = await fetch(url, options);
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        const errorMsg = `Error Grid: ${response.status} ${response.statusText}`;
+        errorService.error(errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      return response.json();
+    } catch (e: any) {
+      errorService.error(`Error al consultar grid: ${e.message || 'Error desconocido'}`);
+      throw e;
     }
-
-    return response.json();
   }
 
   /**

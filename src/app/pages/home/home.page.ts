@@ -1,4 +1,11 @@
-import { Component, signal, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -6,7 +13,9 @@ import { RouterLink } from '@angular/router';
 import { PlatformService } from '../../core/services/platform.service';
 import { wheelLayoutService } from '../../core/services/wheel-layout.service';
 import { tireInventoryService } from '../../core/services/tire-inventory.service';
-import { assetApiService, AssetEquipment } from '../../core/services/asset-api.service';
+import { AssetApiService, AssetEquipment } from '../../core/services/asset-api.service';
+import { errorService } from '../../core/services/error.service';
+import { loadingService } from '../../core/services/loading.service';
 import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/models/vehicle.model';
 import { TireInventoryItem, TireStatus } from '../../core/models/tire-inventory.model';
 import { eamConfigService } from '../../core/config/eam-config.service';
@@ -32,10 +41,12 @@ interface PendingMovement {
   imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage implements OnInit {
-  // Services
-  private readonly platformService: PlatformService;
+  // Services (properly injected via Angular DI)
+  private readonly platformService = inject(PlatformService);
+  private readonly assetApi = inject(AssetApiService);
 
   // State
   manualCode = '';
@@ -43,6 +54,9 @@ export class HomePage implements OnInit {
   vehicle = signal<VehicleWithTires | null>(null);
   selectedPosition = signal<TirePosition | null>(null);
   assetInfo = signal<any>(null);
+
+  // Expose loadingService for template
+  readonly loadingService = loadingService;
 
   // Inventory
   inventory = signal<TireInventoryItem[]>([]);
@@ -52,10 +66,6 @@ export class HomePage implements OnInit {
   dragTargetPosition = signal<string | null>(null);
   dragData = signal<{ source: 'inventory' | 'diagram'; data: any } | null>(null);
   pendingMovements = signal<PendingMovement[]>([]);
-
-  constructor() {
-    this.platformService = new PlatformService();
-  }
 
   ngOnInit() {
     this.loadInventory();
@@ -103,7 +113,7 @@ export class HomePage implements OnInit {
     });
   });
 
-  // Cargar inventario
+  // Cargar inventario (el loadingInterceptor maneja el estado automáticamente)
   async loadInventory() {
     const items = await tireInventoryService.getInventory();
     this.inventory.set(items);
@@ -501,7 +511,7 @@ export class HomePage implements OnInit {
     const appliedCount = movements.length;
     this.pendingMovements.set([]);
 
-    alert(`Applied ${appliedCount} movements successfully!`);
+    errorService.success(`Applied ${appliedCount} movements successfully!`);
   }
 
   simulateScan() {
@@ -546,13 +556,15 @@ export class HomePage implements OnInit {
     let code = input.trim().toUpperCase();
 
     // Intentar buscar en EAM si está configurado
+    // El loadingInterceptor maneja automáticamente el estado de carga
+    // para todos los requests HTTP via HttpClient
     if (eamConfigService.isConfigured()) {
       try {
         // Guardar organización
         this.saveOrg();
 
         const org = this.manualOrg.trim().toUpperCase();
-        const asset = await assetApiService.getAsset(code, org);
+        const asset = await this.assetApi.getAsset(code, org).toPromise();
 
         if (asset) {
           // El asset existe en EAM - cargarlo
@@ -603,8 +615,8 @@ export class HomePage implements OnInit {
 
   // Helper para mostrar toast
   private showToast(message: string) {
-    // Usar alert por ahora (después podemos usar un toast service)
-    alert(message);
+    // Usar errorService para notificaciones
+    errorService.error(message);
   }
 
   // Cargar vehículo desde asset de EAM
@@ -665,23 +677,23 @@ export class HomePage implements OnInit {
 
   viewDetail() {
     const pos = this.selectedPosition();
-    alert(
+    errorService.info(
       `Detalles del neumático:\nCódigo: ${pos?.code || 'N/A'}\nPresión: ${pos?.pressure || 'N/A'} PSI\nProfundidad: ${pos?.depth || 'N/A'} mm\nPosición: ${pos?.position}`,
     );
   }
 
   changeTire() {
-    alert('Arrastrá un neumático del inventario a la posición deseada');
+    errorService.info('Arrastrá un neumático del inventario a la posición deseada');
   }
 
   createWorkOrder() {
-    alert(
+    errorService.info(
       'Crear Orden de Trabajo\nTipo: Cambio de neumático\nPosición: ' +
         this.selectedPosition()?.position,
     );
   }
 
   registerDepth() {
-    alert('Registrar profundidad de dibujo');
+    errorService.info('Registrar profundidad de dibujo');
   }
 }

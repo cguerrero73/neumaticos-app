@@ -1,4 +1,5 @@
 import { VehicleWithTires, Vehicle } from '../models/vehicle.model';
+import { loggerService } from './logger.service';
 
 /**
  * Vehicle API Service
@@ -90,7 +91,7 @@ export class VehicleApiService {
     data: { pressure?: number; depth?: number; code?: string },
   ): Promise<void> {
     // TODO: PUT /api/vehicles/:id/positions/:positionId
-    console.log('Update tire:', vehicleId, positionId, data);
+    loggerService.debug('Update tire', { vehicleId, positionId, data });
   }
 
   /**
@@ -102,7 +103,7 @@ export class VehicleApiService {
     type: 'CHANGE' | 'DEPTH',
   ): Promise<void> {
     // TODO: POST /api/work-orders
-    console.log('Create work order:', vehicleId, positionId, type);
+    loggerService.debug('Create work order', { vehicleId, positionId, type });
   }
 }
 

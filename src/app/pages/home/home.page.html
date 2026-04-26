@@ -1,5 +1,15 @@
 <!-- Scanner Page -->
 <div class="scanner-page">
+  <!-- Loading overlay - controlado por loadingService via interceptor -->
+  @if (loadingService.isActive()) {
+    <div class="loading-overlay">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <p>Cargando...</p>
+      </div>
+    </div>
+  }
+
   <!-- Header visible siempre -->
   <div class="header">
     <div class="header-top">

@@ -5,6 +5,7 @@
  */
 
 import { TireInventoryItem, TireStatus } from '../models/tire-inventory.model';
+import { loggerService } from './logger.service';
 
 export class TireInventoryService {
   private readonly baseUrl = '/api/tire-inventory';
@@ -36,7 +37,7 @@ export class TireInventoryService {
    */
   async addReplacedTire(tire: TireInventoryItem): Promise<void> {
     // Por ahora en memoria - después persistir a API
-    console.log('Added replaced tire:', tire);
+    loggerService.debug('Added replaced tire', tire);
   }
 
   /**
@@ -44,7 +45,7 @@ export class TireInventoryService {
    */
   async markAsUsed(tireId: string): Promise<void> {
     // TODO: PUT /api/tire-inventory/:id/status
-    console.log('Mark as used:', tireId);
+    loggerService.debug('Mark as used', { tireId });
   }
 
   /**
