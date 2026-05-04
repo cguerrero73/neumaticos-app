@@ -19,6 +19,8 @@ import { loadingService } from '../../core/services/loading.service';
 import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/models/vehicle.model';
 import { TireInventoryItem, TireStatus } from '../../core/models/tire-inventory.model';
 import { eamConfigService } from '../../core/config/eam-config.service';
+import { EamGridDataService } from '../../core/services/eam-grid-data.service';
+import { EquipmentTreeComponent } from '../../components/equipment-tree/equipment-tree.component';
 
 interface TireFilters {
   measure?: string;
@@ -35,10 +37,20 @@ interface PendingMovement {
   originalTire?: TirePosition;
 }
 
+// Tree node for equipment hierarchy
+export interface EquipmentTreeNode {
+  code: string;
+  description: string;
+  type?: string;
+  status?: string;
+  children?: EquipmentTreeNode[];
+  expanded?: boolean;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink, EquipmentTreeComponent],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,6 +59,7 @@ export class HomePage implements OnInit {
   // Services (properly injected via Angular DI)
   private readonly platformService = inject(PlatformService);
   private readonly assetApi = inject(AssetApiService);
+  private readonly gridData = inject(EamGridDataService);
 
   // State
   manualCode = '';
@@ -54,6 +67,9 @@ export class HomePage implements OnInit {
   vehicle = signal<VehicleWithTires | null>(null);
   selectedPosition = signal<TirePosition | null>(null);
   assetInfo = signal<any>(null);
+
+  // Equipment tree (hierarchy)
+  equipmentTree = signal<EquipmentTreeNode[]>([]);
 
   // Expose loadingService for template
   readonly loadingService = loadingService;
@@ -577,8 +593,7 @@ export class HomePage implements OnInit {
           return;
         }
       } catch (e: any) {
-        console.error('Error consultando EAM:', e);
-        this.showToast(`Error al buscar: ${e.message || 'Intente más tarde'}`);
+        // El error se maneja en el interceptor, no mostrar nada acá
         return;
       }
     }
@@ -651,6 +666,26 @@ export class HomePage implements OnInit {
     this.assetInfo.set(info as any);
     this.manualCode = '';
     this.loadInventory();
+
+    // Cargar jerarquía de equipos (hijos)
+    this.loadEquipmentTree(code);
+  }
+
+  // Cargar estructura de equipos (árbol de jerarquía)
+  loadEquipmentTree(parentCode: string) {
+    const org = this.manualOrg.trim().toUpperCase();
+    if (!org) return;
+
+    this.assetApi.getEquipmentHierarchy(parentCode, org).subscribe({
+      next: (tree) => {
+        this.equipmentTree.set(tree);
+      },
+      error: (err) => {
+        console.error('Error loading equipment tree:', err);
+        // Silently fail - tree is optional
+        this.equipmentTree.set([]);
+      },
+    });
   }
 
   clearVehicle() {

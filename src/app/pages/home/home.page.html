@@ -139,6 +139,14 @@
           </div>
         </div>
 
+        <!-- Equipment Hierarchy Tree -->
+        <div class="equipment-tree-section">
+          <div class="tree-header">
+            <h3>📋 Estructura de Equipos</h3>
+          </div>
+          <app-equipment-tree [nodes]="equipmentTree()" [showExpandAll]="true" />
+        </div>
+
         <div class="diagram-area">
           <div class="template-diagram">
             <svg viewBox="0 0 300 600" class="vehicle-svg">

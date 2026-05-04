@@ -505,6 +505,37 @@
   }
 }
 
+// ===== Equipment Tree Section =====
+.equipment-tree-section {
+  background: #1a202c;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: 200px;
+  overflow: hidden;
+
+  .tree-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid #2d3748;
+    flex-shrink: 0;
+
+    h3 {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a0aec0;
+    }
+  }
+
+  app-equipment-tree {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .template-diagram {
   flex: 1;
   background: #1a202c;

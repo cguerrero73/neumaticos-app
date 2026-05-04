@@ -1,0 +1,105 @@
+<div class="tree-container">
+  <!-- Controls -->
+  @if (showExpandAll()) {
+    <div class="tree-controls">
+      <button class="tree-btn" (click)="expandAll()">Expandir todo</button>
+      <button class="tree-btn" (click)="collapseAll()">Colapsar todo</button>
+    </div>
+  }
+
+  <!-- Tree nodes -->
+  <ul class="tree-root">
+    @for (node of nodes(); track node.code) {
+      <li class="tree-node">
+        <ng-container
+          *ngTemplateOutlet="nodeTemplate; context: { node: node, level: 0 }"
+        ></ng-container>
+      </li>
+    } @empty {
+      <li class="tree-empty">
+        <span>Sin estructura de equipos</span>
+      </li>
+    }
+  </ul>
+</div>
+
+<!-- Recursive node template -->
+<ng-template #nodeTemplate let-node="node" let-level="level">
+  <div
+    class="node-content"
+    [class.has-children]="hasChildren(node)"
+    [style.padding-left.px]="level * 16"
+  >
+    @if (hasChildren(node)) {
+      <button
+        class="toggle-btn"
+        (click)="toggleNode(node)"
+        [attr.aria-label]="isExpanded(node.code) ? 'Collapse' : 'Expand'"
+      >
+        <span class="toggle-icon" [class.expanded]="isExpanded(node.code)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path
+              d="M4 2L8 6L4 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </button>
+    } @else {
+      <span class="toggle-placeholder"></span>
+    }
+
+    <span class="node-icon">
+      @if (hasChildren(node)) {
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M3 3h18v18H3zM9 3v18M3 9h18" />
+        </svg>
+      } @else {
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <line x1="12" y1="8" x2="12" y2="16" />
+          <line x1="8" y1="12" x2="16" y2="12" />
+        </svg>
+      }
+    </span>
+
+    <div class="node-info">
+      <span class="node-code">{{ node.code }}</span>
+      <span class="node-description">{{ node.description }}</span>
+      @if (node.status) {
+        <span class="node-status" [class]="'status-' + (node.status | lowercase)">{{
+          node.status
+        }}</span>
+      }
+    </div>
+  </div>
+
+  @if (hasChildren(node) && isExpanded(node.code)) {
+    <ul class="tree-children">
+      @for (child of node.children; track child.code) {
+        <li class="tree-node">
+          <ng-container
+            *ngTemplateOutlet="nodeTemplate; context: { node: child, level: level + 1 }"
+          ></ng-container>
+        </li>
+      }
+    </ul>
+  }
+</ng-template>

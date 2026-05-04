@@ -17,6 +17,7 @@ export type ErrorCategory =
   | 'not_found'
   | 'validation'
   | 'server'
+  | 'eam_error'
   | 'unknown';
 
 export interface CategorizedError {
@@ -26,14 +27,49 @@ export interface CategorizedError {
   isRetryable: boolean;
 }
 
+interface ErrorAlert {
+  Message?: string;
+  Name?: string;
+}
+
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
+
+/**
+ * Extrae los mensajes de ErrorAlert del cuerpo del error
+ */
+function extractErrorAlertMessages(errorBody: any): string | null {
+  const errorAlerts = errorBody?.ErrorAlert;
+
+  if (errorAlerts && Array.isArray(errorAlerts) && errorAlerts.length > 0) {
+    return errorAlerts
+      .map((alert: ErrorAlert) => {
+        const message = alert.Message || 'Error desconocido';
+        const name = alert.Name ? ` (${alert.Name})` : '';
+        return `${message}${name}`;
+      })
+      .join('\n');
+  }
+
+  return null;
+}
 
 /**
  * Categorizes an HTTP error into a specific type
  */
 export function categorizeError(error: HttpErrorResponse): CategorizedError {
   const statusCode = error.status;
+
+  // Check for EAM ErrorAlert first (can come with 2xx or 4xx)
+  const errorAlertMsg = extractErrorAlertMessages(error.error);
+  if (errorAlertMsg) {
+    return {
+      category: 'eam_error',
+      message: `EAM Error:\n${errorAlertMsg}`,
+      statusCode,
+      isRetryable: false,
+    };
+  }
 
   // Network errors (0 = no response, CORS issues, etc.)
   if (statusCode === 0 || error.statusText === 'Unknown Error') {
@@ -149,6 +185,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 /**
  * Retry interceptor for transient failures
  * Automatically retries retryable requests up to MAX_RETRIES times
+ * NOTE: Does NOT retry 4xx client errors or EAM ErrorAlert - they are not transient
  */
 export const retryInterceptor: HttpInterceptorFn = (req, next) => {
   // Skip retry for non-idempotent requests
@@ -165,8 +202,21 @@ export const retryInterceptor: HttpInterceptorFn = (req, next) => {
     retry({
       count: MAX_RETRIES,
       delay: (error, retryCount) => {
+        // Don't retry if there's an ErrorAlert in the response - it's not transient
+        const errorAlertMsg = extractErrorAlertMessages(error.error);
+        if (errorAlertMsg) {
+          loggerService.info(`Skipping retry for EAM ErrorAlert on ${req.url}`);
+          return throwError(() => error);
+        }
+
+        // Don't retry 4xx client errors - they're not transient
+        if (error.status >= 400 && error.status < 500) {
+          loggerService.info(`Skipping retry for client error ${error.status} on ${req.url}`);
+          return throwError(() => error);
+        }
+
         loggerService.info(`Retry attempt ${retryCount} for ${req.url}`);
-        return timer(RETRY_DELAY_MS * retryCount); // Use timer to create observable delay
+        return timer(RETRY_DELAY_MS * retryCount);
       },
     }),
     catchError((error: HttpErrorResponse) => {

@@ -1,0 +1,175 @@
+.tree-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tree-controls {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #2d3748;
+  flex-shrink: 0;
+
+  .tree-btn {
+    flex: 1;
+    padding: 6px 10px;
+    background: #1a202c;
+    border: 1px solid #2d3748;
+    border-radius: 6px;
+    color: #a0aec0;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:active {
+      background: #2d3748;
+      color: white;
+    }
+  }
+}
+
+.tree-root,
+.tree-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-root {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.tree-children {
+  // Children are indented via padding-left on .node-content
+}
+
+.tree-empty {
+  padding: 20px;
+  text-align: center;
+  color: #718096;
+  font-size: 13px;
+}
+
+.tree-node {
+  // Each node is a block
+}
+
+.node-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #1a202c;
+  }
+
+  &.has-children {
+    cursor: pointer;
+  }
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  border-radius: 3px;
+
+  &:hover {
+    background: #2d3748;
+    color: white;
+  }
+}
+
+.toggle-icon {
+  display: flex;
+  transition: transform 0.2s ease;
+
+  &.expanded {
+    transform: rotate(90deg);
+  }
+}
+
+.toggle-placeholder {
+  width: 16px;
+  height: 16px;
+}
+
+.node-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  flex-shrink: 0;
+}
+
+.node-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.node-code {
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node-description {
+  font-size: 11px;
+  color: #718096;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node-status {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 2px;
+  width: fit-content;
+
+  &.status-operativo,
+  &.status-active {
+    background: rgba(56, 161, 105, 0.2);
+    color: #48bb78;
+  }
+
+  &.status-inactivo,
+  &.status-inactive {
+    background: rgba(229, 62, 62, 0.2);
+    color: #e53e3e;
+  }
+
+  &.status-mantenimiento,
+  &.status-maintenance {
+    background: rgba(236, 201, 75, 0.2);
+    color: #ecc94b;
+  }
+
+  &.status-default {
+    background: rgba(113, 128, 150, 0.2);
+    color: #a0aec0;
+  }
+}

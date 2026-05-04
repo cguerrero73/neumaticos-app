@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:proxy": "node proxy/server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "vitest run",
