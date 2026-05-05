@@ -27,10 +27,25 @@ const EAM_HEADERS = {
 // Middleware para agregar headers de autenticación (sin body parsing)
 const authHeadersMiddleware = (req, res, next) => {
   // Log de request entrante
-  console.log('\n📥 INCOMING REQUEST');
+  console.log('\n═══════════════════════════════════════════════════════');
+  console.log('📥 INCOMING REQUEST');
+  console.log('═══════════════════════════════════════════════════════');
   console.log('  Method:', req.method);
   console.log('  URL:', req.url);
   console.log('  Path:', req.path);
+  console.log('  Query:', JSON.stringify(req.query, null, 2));
+
+  // Log headers relevantes (sin API key completo)
+  console.log('\n  Headers:');
+  console.log('    accept:', req.headers.accept);
+  console.log('    content-type:', req.headers['content-type']);
+  console.log('    tenant:', req.headers.tenant);
+  console.log('    organization:', req.headers.organization);
+  console.log('    apiversion:', req.headers.apiversion);
+  console.log(
+    '    x-api-key:',
+    req.headers['x-api-key'] ? req.headers['x-api-key'].substring(0, 10) + '...' : 'NOT SET',
+  );
 
   // Agregar headers de EAM a la request
   Object.keys(EAM_HEADERS).forEach((key) => {
@@ -50,23 +65,30 @@ const eamProxy = createProxyMiddleware({
   },
   on: {
     proxyReq: (proxyReq, req, res) => {
-      // Log de request saliente
-      console.log('\n📤 OUTGOING REQUEST');
-      console.log('  Target:', proxyReq.path);
+      // Log de request saliente al EAM
+      console.log('\n═══════════════════════════════════════════════════════');
+      console.log('📤 OUTGOING REQUEST TO EAM');
+      console.log('═══════════════════════════════════════════════════════');
+      console.log('  Target URL:', proxyReq.path);
       console.log('  Method:', proxyReq.method);
 
-      // Si hay body, loguearlo (solo primero 500 chars)
-      if (req.body) {
-        const bodyStr = JSON.stringify(req.body);
-        console.log('  Body:', bodyStr.substring(0, 500) + (bodyStr.length > 500 ? '...' : ''));
-      }
+      // Log headers que se envían al EAM
+      console.log('\n  Headers sent to EAM:');
+      console.log('    tenant:', proxyReq.getHeader('tenant') || 'NOT SET');
+      console.log('    organization:', proxyReq.getHeader('organization') || 'NOT SET');
+      console.log('    apiversion:', proxyReq.getHeader('apiversion') || 'NOT SET');
+      const apiKey = proxyReq.getHeader('x-api-key');
+      console.log('    x-api-key:', apiKey ? apiKey.substring(0, 10) + '...' : 'NOT SET');
+      console.log('    content-type:', proxyReq.getHeader('content-type'));
 
-      // Asegurar que los headers estén en la request proxy
-      Object.keys(EAM_HEADERS).forEach((key) => {
-        if (EAM_HEADERS[key]) {
-          proxyReq.setHeader(key, EAM_HEADERS[key]);
-        }
-      });
+      // Si hay body, loguearlo completo
+      if (req.body) {
+        console.log('\n  Body (full):');
+        const bodyStr = JSON.stringify(req.body, null, 2);
+        console.log('  ' + bodyStr.split('\n').join('\n  '));
+      } else {
+        console.log('\n  Body: none');
+      }
     },
     proxyRes: (proxyRes, req, res) => {
       // Forzar que el response no se cachee
@@ -74,8 +96,70 @@ const eamProxy = createProxyMiddleware({
       proxyRes.headers['pragma'] = 'no-cache';
       proxyRes.headers['expires'] = '0';
 
-      console.log('\n📥 RESPONSE');
-      console.log('  Status:', proxyRes.statusCode);
+      // Acumular response para hacer summary
+      let responseBody = '';
+      proxyRes.on('data', (chunk) => {
+        responseBody += chunk.toString();
+      });
+
+      proxyRes.on('end', () => {
+        console.log('\n═══════════════════════════════════════════════════════');
+        console.log('📥 RESPONSE FROM EAM');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('  Status:', proxyRes.statusCode);
+        console.log('\n  Response headers:');
+        console.log('    content-type:', proxyRes.headers['content-type']);
+        console.log('    content-length:', proxyRes.headers['content-length']);
+
+        // Resumen del body
+        if (responseBody) {
+          console.log('\n  Body (first 1000 chars):');
+          const truncated =
+            responseBody.length > 1000
+              ? responseBody.substring(0, 1000) + '\n  ... (truncated)'
+              : responseBody;
+          console.log('  ' + truncated.split('\n').join('\n  '));
+        } else {
+          console.log('\n  Body: empty');
+        }
+
+        // Parse y mostrar estructura
+        try {
+          const json = JSON.parse(responseBody);
+          console.log('\n  Body structure:');
+          if (Array.isArray(json)) {
+            console.log('    Type: Array');
+            console.log('    Length:', json.length);
+            if (json.length > 0) {
+              console.log('    First item keys:', Object.keys(json[0]).join(', '));
+            }
+          } else if (typeof json === 'object' && json !== null) {
+            console.log('    Type: Object');
+            console.log('    Keys:', Object.keys(json).join(', '));
+            // MostrarGRID structure si existe
+            if (json.GRID) {
+              console.log('    GRID structure:');
+              console.log('      ROWCOUNT:', json.GRID.ROWCOUNT);
+              console.log(
+                '      HEADER keys:',
+                json.GRID.HEADER ? Object.keys(json.GRID.HEADER).join(', ') : 'none',
+              );
+              console.log(
+                '      DATA keys:',
+                json.GRID.DATA ? Object.keys(json.GRID.DATA).join(', ') : 'none',
+              );
+            }
+            if (json.Result?.ResultData?.GRID) {
+              console.log('    Result.ResultData.GRID exists');
+            }
+          } else {
+            console.log('    Type:', typeof json);
+          }
+        } catch {
+          console.log('\n  Body is not JSON (plain text)');
+        }
+        console.log('\n═══════════════════════════════════════════════════════\n');
+      });
     },
     error: (err, req, res) => {
       console.error('\n❌ Proxy error:', err.message);

@@ -107,7 +107,19 @@ export interface RawGridFullResponse {
       };
     };
   };
+  FIELDS?: {
+    FIELD?: RawGridField[];
+  };
   ROWCOUNT?: number;
+  [key: string]: any; // Allow additional properties for different grid responses
+}
+
+export interface RawGridField {
+  name?: string;
+  label?: string;
+  aliasnum?: number | string;
+  type?: string;
+  [key: string]: any;
 }
 
 export interface RawGridRow {

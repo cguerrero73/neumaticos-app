@@ -1,4 +1,4 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentTreeNode } from '../../pages/home/home.page';
 
@@ -17,6 +17,9 @@ export class EquipmentTreeComponent {
   /** Whether to show expand/collapse all button */
   showExpandAll = input(true);
 
+  /** Emit when a node is expanded (for lazy loading children) */
+  nodeExpand = output<string>();
+
   /** Track which nodes are expanded */
   private _expandedNodes = signal<Set<string>>(new Set());
 
@@ -26,19 +29,28 @@ export class EquipmentTreeComponent {
 
   toggleNode(node: EquipmentTreeNode) {
     const code = node.code;
+    const wasExpanded = this._expandedNodes().has(code);
+
+    console.log('[EquipmentTree] toggleNode:', code, 'wasExpanded:', wasExpanded);
+
     this._expandedNodes.update((set) => {
       const newSet = new Set(set);
-      if (newSet.has(code)) {
+      if (wasExpanded) {
         newSet.delete(code);
       } else {
         newSet.add(code);
+        // Emit expansion event for lazy loading
+        console.log('[EquipmentTree] Emitting nodeExpand:', code);
+        this.nodeExpand.emit(code);
       }
       return newSet;
     });
   }
 
   hasChildren(node: EquipmentTreeNode): boolean {
-    return !!node.children && node.children.length > 0;
+    // Siempre mostrar expand si hay array (aunque esté vacío)
+    // La primera vez que se expande, dispara la carga de hijos
+    return !!node.children;
   }
 
   expandAll() {

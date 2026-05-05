@@ -16,6 +16,11 @@ import { tireInventoryService } from '../../core/services/tire-inventory.service
 import { AssetApiService, AssetEquipment } from '../../core/services/asset-api.service';
 import { errorService } from '../../core/services/error.service';
 import { loadingService } from '../../core/services/loading.service';
+import {
+  BarcodeScannerService,
+  ScanError,
+  ScanErrorCode,
+} from '../../core/services/barcode-scanner.service';
 import { VehicleWithTires, AxleDefinition, TirePosition } from '../../core/models/vehicle.model';
 import { TireInventoryItem, TireStatus } from '../../core/models/tire-inventory.model';
 import { eamConfigService } from '../../core/config/eam-config.service';
@@ -73,6 +78,12 @@ export class HomePage implements OnInit {
 
   // Expose loadingService for template
   readonly loadingService = loadingService;
+
+  // Scanner service (singleton)
+  private readonly barcodeScanner = BarcodeScannerService;
+
+  // Scanner state
+  isScanning = signal(false);
 
   // Inventory
   inventory = signal<TireInventoryItem[]>([]);
@@ -686,6 +697,41 @@ export class HomePage implements OnInit {
         this.equipmentTree.set([]);
       },
     });
+  }
+
+  // Handle node expansion for lazy loading children
+  onEquipmentNodeExpand(nodeCode: string) {
+    console.log('[HomePage] onEquipmentNodeExpand:', nodeCode);
+    this.assetApi.getEquipmentChildren(nodeCode).subscribe({
+      next: (children) => {
+        console.log('[HomePage] Children received for', nodeCode, ':', children);
+        // Find the node in the tree and add children
+        this.equipmentTree.update((tree) => {
+          const node = this.findNodeInTree(tree, nodeCode);
+          if (node) {
+            node.children = children;
+          }
+          return [...tree];
+        });
+      },
+      error: (err) => {
+        console.error('Error loading children for node:', nodeCode, err);
+      },
+    });
+  }
+
+  // Find a node in the tree by code
+  private findNodeInTree(nodes: EquipmentTreeNode[], code: string): EquipmentTreeNode | null {
+    for (const node of nodes) {
+      if (node.code === code) {
+        return node;
+      }
+      if (node.children && node.children.length > 0) {
+        const found = this.findNodeInTree(node.children, code);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 
   clearVehicle() {

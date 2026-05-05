@@ -43,6 +43,11 @@ export class EamGridDataService {
   /**
    * Consulta un grid de EAM con estrategia inteligente de caching
    *
+   * Estrategia:
+   * 1. Siempre hacer LIST.DATA_ONLY.STORED para obtener datos
+   * 2. Si hay campos sin mapear, hacer LIST.HEAD_ONLY.STORED para completar el mapping
+   * 3. Re-parsear con el mapping completo
+   *
    * @param request - Request del grid (contiene GRID_NAME, filtros, etc.)
    * @param fieldsToExtract - Array de nombres de campos que interesan (opcional, solo para validación)
    * @returns GridQueryResult con rows, totalRows y fieldMapping
@@ -50,84 +55,67 @@ export class EamGridDataService {
   async query(request: GridQueryRequest, fieldsToExtract?: string[]): Promise<GridQueryResult> {
     const gridName = request.GRID.GRID_NAME;
 
+    console.log('\n🟢 EamGridDataService.query() START');
+    console.log('   Grid name:', gridName);
+    console.log('   Fields to extract:', fieldsToExtract);
+    console.log('   Request type:', request.REQUEST_TYPE);
+
     // Aplicar defaults
     const enrichedRequest = this.enrichRequest(request);
-
-    // Obtener tipo de request
-    const requestType = enrichedRequest.REQUEST_TYPE as GridRequestType;
+    console.log('   Enriched request type:', enrichedRequest.REQUEST_TYPE);
 
     // Obtener field mapping del cache
     let fieldMapping = this.getFieldMappingFromCache(gridName);
+    console.log(
+      '   Cached field mapping keys:',
+      Object.keys(fieldMapping).length > 0 ? Object.keys(fieldMapping) : 'none',
+    );
 
-    // Determinar si necesitamos metadata o solo datos
-    let needsFieldMapping = false;
-    let needsTotalRows = false;
+    // Siempre hacer LIST.DATA_ONLY.STORED para obtener los datos
+    console.log('   ➡️ Executing DATA_ONLY.STORED to get rows');
+    const dataResponse = await this.executeQuery({
+      ...enrichedRequest,
+      REQUEST_TYPE: 'LIST.DATA_ONLY.STORED',
+    });
 
-    switch (requestType) {
-      case 'LIST.COUNT.STORED':
-        needsFieldMapping = true;
-        needsTotalRows = true;
-        break;
-      case 'LIST.DATA_ONLY.STORED':
-        // Si no tenemos el mapping en cache, necesitamos hacer COUNT.STORED primero
-        if (Object.keys(fieldMapping).length === 0) {
-          needsFieldMapping = true;
-          needsTotalRows = true;
-        }
-        break;
-      case 'LIST.HEAD_ONLY.STORED':
-        needsFieldMapping = true;
-        needsTotalRows = false;
-        break;
-      default:
-        // Para LOV o desconocidos, tratar como DATA_ONLY
-        if (Object.keys(fieldMapping).length === 0) {
-          needsFieldMapping = true;
-          needsTotalRows = true;
-        }
-    }
+    // Parsear respuesta con el mapping actual (o vacío)
+    let result = this.parseResponse(dataResponse, fieldMapping, false);
 
-    // Si necesitamos field mapping pero no lo tenemos completo
-    if (needsFieldMapping && Object.keys(fieldMapping).length === 0) {
-      // Hacemos LIST.COUNT.STORED primero para obtener el mapping
-      const countRequest = { ...enrichedRequest, REQUEST_TYPE: 'LIST.COUNT.STORED' as string };
-      const countResponse = await this.executeQuery(countRequest);
-      // No necesitamos parsear las filas, solo el field mapping
+    // Verificar si hay campos sin mapear (índices que no tenemos en el mapping)
+    const unmappedIndexes = this.findUnmappedIndexes(result.rows, fieldMapping);
 
-      // Extraer field mapping de la respuesta
-      fieldMapping = this.extractFieldMappingFromResponse(countResponse, gridName);
+    if (unmappedIndexes.length > 0) {
+      console.log('   ⚠️ Found unmapped field indexes:', unmappedIndexes);
+      console.log('   🔄 Fetching HEAD_ONLY.STORED for field mapping');
+
+      // Hacer HEAD_ONLY.STORED para obtener el mapping de campos
+      const headRequest = createGridRequest(gridName, 'LIST.HEAD_ONLY.STORED');
+      headRequest.GRID = { ...enrichedRequest.GRID };
+      const headResponse = await this.executeQuery(headRequest);
+
+      // Extraer nuevo field mapping
+      const newFieldMapping = this.extractFieldMappingFromResponse(headResponse, gridName);
+      console.log('   📋 New field mapping from HEAD_ONLY:', newFieldMapping);
+
+      // Actualizar cache
+      fieldMapping = newFieldMapping;
       this.saveFieldMappingToCache(gridName, fieldMapping);
 
-      // Verificar si tenemos todos los campos necesarios
-      if (fieldsToExtract && !this.hasAllFields(fieldMapping, fieldsToExtract)) {
-        // Hacer query adicional para obtener el mapping completo
-        const headRequest = createGridRequest(gridName, 'LIST.HEAD_ONLY.STORED');
-        headRequest.GRID = { ...enrichedRequest.GRID };
-        const headResponse = await this.executeQuery(headRequest);
-        fieldMapping = this.extractFieldMappingFromResponse(headResponse, gridName);
-        this.saveFieldMappingToCache(gridName, fieldMapping);
-      }
-
-      // Si el request original era COUNT.STORED, retornar ahora
-      if (requestType === 'LIST.COUNT.STORED') {
-        const totalRows = this.extractTotalRows(countResponse);
-        return {
-          rows: [],
-          totalRows,
-          fieldMapping,
-          gridName,
-        };
-      }
+      // Re-parsear con el mapping completo
+      result = this.parseResponse(dataResponse, fieldMapping, false);
     }
 
-    // Ejecutar el request original
-    const response = await this.executeQuery(enrichedRequest);
-    const result = this.parseResponse(response, fieldMapping, needsTotalRows);
+    // Extraer total de filas si viene en la respuesta
+    const totalRows = this.extractTotalRows(dataResponse);
+
+    console.log('   ✅ Query complete - rows:', result.rows.length, 'totalRows:', totalRows);
+
 
     return {
       ...result,
       fieldMapping,
       gridName,
+      totalRows,
     };
   }
 
@@ -152,6 +140,16 @@ export class EamGridDataService {
    * Ejecuta el query usando HttpClient (el manejo de errores está en el interceptor)
    */
   private async executeQuery(request: GridQueryRequest): Promise<RawGridResponse> {
+    const gridName = request.GRID?.GRID_NAME || 'unknown';
+    const requestType = request.REQUEST_TYPE || 'LIST.COUNT.STORED';
+
+    console.log('\n🔵 EamGridDataService.executeQuery()');
+    console.log('   Grid:', gridName);
+    console.log('   Request type:', requestType);
+    console.log('   Endpoint:', this.endpoint);
+    console.log('   Headers:', eamConfigService.getHeaders());
+    console.log('   Request body:', JSON.stringify(request, null, 2));
+
     const headers = new HttpHeaders({
       ...eamConfigService.getHeaders(),
       'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -163,6 +161,11 @@ export class EamGridDataService {
     // Si hay 4xx con ErrorAlert, el interceptor lo detecta y lanza
     const response = await firstValueFrom(
       this.http.post<RawGridResponse>(this.endpoint, request, { headers }),
+    );
+
+    console.log(
+      '   Response received:',
+      JSON.stringify(response, null, 2).substring(0, 500) + '...',
     );
 
     return response;
@@ -244,13 +247,13 @@ export class EamGridDataService {
   ): Record<string, string> {
     const mapping: Record<string, string> = {};
 
-    // El mapping puede venir en el header de la respuesta
+    // Formato 1: GRID.HEADER.DATATABLE.COLUMNS.COLUMN (formato antiguo)
     const columns =
       response?.GRID?.HEADER?.DATATABLE?.COLUMNS?.COLUMN ||
       response?.Result?.ResultData?.GRID?.HEADER?.DATATABLE?.COLUMNS?.COLUMN ||
       [];
 
-    if (Array.isArray(columns)) {
+    if (Array.isArray(columns) && columns.length > 0) {
       columns.forEach((col: any) => {
         const index = String(col.INDEX || col.index);
         const name = col.NAME || col.COLUMNNAME || col.name || col.columnname;
@@ -258,6 +261,25 @@ export class EamGridDataService {
           mapping[index] = name;
         }
       });
+      console.log('   📋 Field mapping from COLUMNS format, keys:', Object.keys(mapping));
+      return mapping;
+    }
+
+    // Formato 2: GRID.FIELDS.FIELD (nuevo formato EAM con aliasnum como índice)
+    const fields =
+      response?.GRID?.FIELDS?.FIELD || response?.Result?.ResultData?.GRID?.FIELDS?.FIELD || [];
+
+    if (Array.isArray(fields) && fields.length > 0) {
+      fields.forEach((field: any) => {
+        // aliasnum es el índice numérico que usan las filas
+        const index = String(field.aliasnum);
+        const name = field.name || field.label;
+        if (index && name) {
+          mapping[index] = name;
+        }
+      });
+      console.log('   📋 Field mapping from FIELDS format, keys:', Object.keys(mapping));
+      return mapping;
     }
 
     // Si no encontramos en el header, intentar del primer registro
@@ -339,5 +361,25 @@ export class EamGridDataService {
    */
   getCachedMapping(gridName: string): Record<string, string> {
     return this.getFieldMappingFromCache(gridName);
+  }
+
+  /**
+   * Encuentra índices de campos que no están mapeados en las filas
+   */
+  private findUnmappedIndexes(rows: GridRow[], fieldMapping: Record<string, string>): string[] {
+    const unmapped: Set<string> = new Set();
+
+    for (const row of rows) {
+      for (const key of Object.keys(row)) {
+        // Si la key no está en el mapping, es un índice sin mapear
+        const isMapped = Object.values(fieldMapping).some((v) => v === key);
+        if (!isMapped && !fieldMapping[key]) {
+          // La key es un índice numérico que no está en el mapping
+          unmapped.add(key);
+        }
+      }
+    }
+
+    return Array.from(unmapped);
   }
 }

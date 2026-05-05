@@ -144,7 +144,11 @@
           <div class="tree-header">
             <h3>📋 Estructura de Equipos</h3>
           </div>
-          <app-equipment-tree [nodes]="equipmentTree()" [showExpandAll]="true" />
+          <app-equipment-tree
+            [nodes]="equipmentTree()"
+            [showExpandAll]="true"
+            (nodeExpand)="onEquipmentNodeExpand($event)"
+          />
         </div>
 
         <div class="diagram-area">
@@ -294,6 +298,7 @@
         <div class="inventory-grid">
           @for (tire of filteredInventory(); track tire.id) {
             <div class="tire-card-grid" draggable="true" (dragstart)="onDragStart($event, tire)">
+              <div class="tire-id">{{ tire.id }}</div>
               <div class="tire-measure">{{ tire.measure }}</div>
               <div class="tire-brand">{{ tire.brand }}</div>
               <div class="tire-model">{{ tire.model }}</div>

@@ -79,13 +79,13 @@ export class AssetApiService {
    */
   getEquipmentHierarchy(parentCode: string, org: string): Observable<EquipmentTreeNode[]> {
     // Grid query para obtener estructura de equipos
-    // Usamos el grid "zuchil" que contiene la jerarquía de equipos
+    // Usamos el grid "ZUCHIL" que contiene la jerarquía de equipos
     const gridRequest: GridQueryRequest = {
       GRID: {
-        GRID_NAME: 'zuchil',
+        GRID_NAME: 'ZUCHIL',
       },
       ADDON_FILTER: {
-        ALIAS_NAME: 'PARENT_EQUIPMENT_CODE',
+        ALIAS_NAME: 'stc_parent',
         OPERATOR: '=',
         VALUE: parentCode,
       },
@@ -108,26 +108,38 @@ export class AssetApiService {
   }
 
   /**
-   * Construye el árbol de equipos a partir de las filas del grid
+   * Construye el árbol de equipos a partir de las filas del grid zuchil
    */
   private buildTree(rows: any[], rootCode: string): EquipmentTreeNode[] {
     // Map para lookup rápido
     const nodeMap = new Map<string, EquipmentTreeNode>();
 
-    // Crear nodos
+    // Crear nodos con los campos del grid zuchil (obj_code, obj_desc, stc_parent)
     rows.forEach((row: any) => {
       const node: EquipmentTreeNode = {
-        code: row.EQUIPMENT_CODE || '',
-        description: row.DESCRIPTION || '',
-        type: row.EQUIPMENT_TYPE,
-        status: row.STATUS,
+        code: row.obj_code || '',
+        description: row.obj_desc || '',
+        type: row.equipment_type,
+        status: row.status,
         children: [],
         expanded: false,
       };
       nodeMap.set(node.code, node);
     });
 
-    // Construir árbol
+    // Agregar todos los nodos como hijos de sus padres correspondientes
+    rows.forEach((row: any) => {
+      const parentCode = row.stc_parent;
+      const childCode = row.obj_code;
+      const parentNode = nodeMap.get(parentCode);
+      const childNode = nodeMap.get(childCode);
+
+      if (parentNode && childNode && parentCode !== childCode) {
+        parentNode.children!.push(childNode);
+      }
+    });
+
+    // Construir árbol desde root
     const roots: EquipmentTreeNode[] = [];
 
     // Agregar el root si existe en los resultados
@@ -136,16 +148,69 @@ export class AssetApiService {
       roots.push(rootNode);
     }
 
-    // Agregar hijos directos del root
-    const directChildren = rows.filter((r: any) => r.PARENT_EQUIPMENT_CODE === rootCode);
+    // Agregar hijos directos del root (stc_parent = código del padre)
+    const directChildren = rows.filter((r: any) => r.stc_parent === rootCode);
     directChildren.forEach((child: any) => {
-      const childNode = nodeMap.get(child.EQUIPMENT_CODE);
+      const childNode = nodeMap.get(child.obj_code);
       if (childNode) {
         roots.push(childNode);
       }
     });
 
     return roots;
+  }
+
+  /**
+   * Obtiene los hijos directos de un equipo (para lazy loading al expandir)
+   * @param parentCode - código del equipo padre
+   * @returns Observable con array de EquipmentTreeNode
+   */
+  getEquipmentChildren(parentCode: string): Observable<EquipmentTreeNode[]> {
+    const gridRequest: GridQueryRequest = {
+      GRID: {
+        GRID_NAME: 'ZUCHIL',
+      },
+      ADDON_FILTER: {
+        ALIAS_NAME: 'stc_parent',
+        OPERATOR: '=',
+        VALUE: parentCode,
+      },
+      REQUEST_TYPE: 'LIST.COUNT.STORED',
+    };
+
+    return new Observable((observer) => {
+      this.gridData.query(gridRequest).then(
+        (result) => {
+          const nodes = this.buildNodesFromRows(result.rows);
+          observer.next(nodes);
+          observer.complete();
+        },
+        (error) => {
+          observer.error(error);
+        },
+      );
+    });
+  }
+
+  /**
+   * Construye nodos a partir de las filas del grid zuchil
+   */
+  private buildNodesFromRows(rows: any[]): EquipmentTreeNode[] {
+    const nodes: EquipmentTreeNode[] = [];
+
+    rows.forEach((row: any) => {
+      const node: EquipmentTreeNode = {
+        code: row.obj_code || '',
+        description: row.obj_desc || '',
+        type: row.equipment_type,
+        status: row.status,
+        children: [],
+        expanded: false,
+      };
+      nodes.push(node);
+    });
+
+    return nodes;
   }
 
   /**
