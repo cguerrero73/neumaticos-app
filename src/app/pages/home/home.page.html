@@ -67,7 +67,7 @@
         <div class="tire-card" [class.empty]="!selectedPosition()">
           @if (selectedPosition()) {
             <div class="tire-header">
-              <span class="tire-code">{{ selectedPosition()?.code || '-' }}</span>
+              <span class="tire-id">{{ selectedPosition()?.id || '-' }}</span>
               <button class="clear-selection" (click)="clearSelection()">✕</button>
             </div>
             <div class="tire-position">{{ selectedPosition()?.position }}</div>
@@ -112,6 +112,7 @@
               draggable="true"
               (dragstart)="onDragStart($event, tire)"
             >
+              <div class="tire-id">{{ tire.id }}</div>
               <div class="tire-measure">{{ tire.measure }}</div>
               <div class="tire-brand">{{ tire.brand }} {{ tire.model }}</div>
             </div>
@@ -228,14 +229,18 @@
                   </div>
                   <div class="movement-info">
                     @if (move.action === 'REPLACE') {
-                      <span class="position">{{ move.originalTire?.code || '-' }}</span>
+                      <span class="tire-id new">{{ move.tire.id }}</span>
+                      <span class="measure">{{ move.tire.measure }}</span>
                       <span class="arrow">→</span>
-                      <span class="position">{{ move.tire.measure }}</span>
+                      <span class="tire-id old">{{ move.originalTire?.id || '-' }}</span>
+                      <span class="measure">{{ move.originalTire?.code || '-' }}</span>
                     } @else if (move.action === 'SWAP') {
+                      <span class="tire-id">{{ move.tire.id }}</span>
                       <span class="position">{{ move.position }}</span>
                       <span class="arrow">↔</span>
                       <span class="position">{{ move.to }}</span>
                     } @else {
+                      <span class="tire-id">{{ move.tire.id }}</span>
                       <span class="position">{{ move.tire.measure }} {{ move.tire.brand }}</span>
                     }
                   </div>

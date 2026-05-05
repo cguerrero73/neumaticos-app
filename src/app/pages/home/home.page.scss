@@ -267,8 +267,8 @@
   align-items: center;
   margin-bottom: 8px;
 
-  .tire-code {
-    color: #48bb78;
+  .tire-id {
+    color: #ed8936;
     font-size: 20px;
     font-weight: 700;
   }
@@ -402,6 +402,30 @@
 
   &.replaced {
     border-left: 3px solid #e53e3e;
+  }
+
+  .tire-id {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ed8936;
+
+    &.old {
+      color: #e53e3e; // rojo para el que sale
+    }
+
+    &.new {
+      color: #48bb78; // verde para el nuevo
+    }
+  }
+
+  .measure,
+  .position {
+    font-size: 12px;
+    color: #a0aec0;
+  }
+
+  .arrow {
+    color: #718096;
   }
 
   .tire-measure {
@@ -814,6 +838,20 @@
       align-items: center;
       gap: 6px;
       flex: 1;
+
+      .tire-id {
+        font-size: 13px;
+        font-weight: 700;
+        color: #ed8936;
+
+        &.old {
+          color: #e53e3e; // rojo para el que sale
+        }
+
+        &.new {
+          color: #48bb78; // verde para el nuevo
+        }
+      }
 
       .position {
         font-size: 12px;

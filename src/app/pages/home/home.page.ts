@@ -5,7 +5,11 @@ import {
   OnInit,
   inject,
   ChangeDetectionStrategy,
+  effect,
+  untracked,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -73,8 +77,25 @@ export class HomePage implements OnInit {
   selectedPosition = signal<TirePosition | null>(null);
   assetInfo = signal<any>(null);
 
-  // Equipment tree (hierarchy)
+  // Equipment tree (hierarchy) - signals for reactive loading
+  equipmentTreeParentCode = signal<string>('');
   equipmentTree = signal<EquipmentTreeNode[]>([]);
+
+  // Effect to load equipment tree when parent code changes
+  // Note: using untracked when setting result to avoid circular effect trigger
+  private readonly loadTreeEffect = effect(() => {
+    const parentCode = untracked(() => this.equipmentTreeParentCode());
+    const org = untracked(() => this.manualOrg.trim().toUpperCase());
+    if (!parentCode || !org) {
+      untracked(() => this.equipmentTree.set([]));
+      return;
+    }
+
+    // Using effect + firstValueFrom for promise-based async
+    firstValueFrom(this.assetApi.getEquipmentHierarchy(parentCode, org))
+      .then((tree: EquipmentTreeNode[]) => untracked(() => this.equipmentTree.set(tree)))
+      .catch(() => untracked(() => this.equipmentTree.set([])));
+  });
 
   // Expose loadingService for template
   readonly loadingService = loadingService;
@@ -679,32 +700,13 @@ export class HomePage implements OnInit {
     this.loadInventory();
 
     // Cargar jerarquía de equipos (hijos)
-    this.loadEquipmentTree(code);
-  }
-
-  // Cargar estructura de equipos (árbol de jerarquía)
-  loadEquipmentTree(parentCode: string) {
-    const org = this.manualOrg.trim().toUpperCase();
-    if (!org) return;
-
-    this.assetApi.getEquipmentHierarchy(parentCode, org).subscribe({
-      next: (tree) => {
-        this.equipmentTree.set(tree);
-      },
-      error: (err) => {
-        console.error('Error loading equipment tree:', err);
-        // Silently fail - tree is optional
-        this.equipmentTree.set([]);
-      },
-    });
+    this.equipmentTreeParentCode.set(code);
   }
 
   // Handle node expansion for lazy loading children
   onEquipmentNodeExpand(nodeCode: string) {
-    console.log('[HomePage] onEquipmentNodeExpand:', nodeCode);
-    this.assetApi.getEquipmentChildren(nodeCode).subscribe({
-      next: (children) => {
-        console.log('[HomePage] Children received for', nodeCode, ':', children);
+    firstValueFrom(this.assetApi.getEquipmentChildren(nodeCode))
+      .then((children: EquipmentTreeNode[]) => {
         // Find the node in the tree and add children
         this.equipmentTree.update((tree) => {
           const node = this.findNodeInTree(tree, nodeCode);
@@ -713,11 +715,10 @@ export class HomePage implements OnInit {
           }
           return [...tree];
         });
-      },
-      error: (err) => {
+      })
+      .catch((err: any) => {
         console.error('Error loading children for node:', nodeCode, err);
-      },
-    });
+      });
   }
 
   // Find a node in the tree by code

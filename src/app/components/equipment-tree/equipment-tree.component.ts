@@ -31,8 +31,6 @@ export class EquipmentTreeComponent {
     const code = node.code;
     const wasExpanded = this._expandedNodes().has(code);
 
-    console.log('[EquipmentTree] toggleNode:', code, 'wasExpanded:', wasExpanded);
-
     this._expandedNodes.update((set) => {
       const newSet = new Set(set);
       if (wasExpanded) {
@@ -40,7 +38,6 @@ export class EquipmentTreeComponent {
       } else {
         newSet.add(code);
         // Emit expansion event for lazy loading
-        console.log('[EquipmentTree] Emitting nodeExpand:', code);
         this.nodeExpand.emit(code);
       }
       return newSet;
